@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class LikePost extends Model
+{
+    use HasFactory;
+    
+    protected $table = 'like_dislike';
+    protected $primaryKey = 'id_like_dislike';
+    protected $fillable = ['likeable' , 'id_likeable', 'type', 'owner'];
+    protected $dateFormat = 'U';
+}

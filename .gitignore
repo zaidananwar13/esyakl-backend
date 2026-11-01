@@ -1,0 +1,27 @@
+/node_modules
+/public/hot
+/public/storage
+/public/image
+/public/project_user
+/views/template
+/storage/*.key
+/config/session.php
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+*.sql
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Local documentation folder
+.local/
