@@ -2,19 +2,21 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\ClassDiscussion;
 use Tests\TestCase;
 
 class DiscussionModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated()
     {
         $discussion = new ClassDiscussion();
         $this->assertInstanceOf(ClassDiscussion::class, $discussion);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $discussion = new ClassDiscussion();
@@ -30,7 +32,7 @@ class DiscussionModelTest extends TestCase
         $this->assertEquals('Test content', $discussion->content);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $discussion = new ClassDiscussion();

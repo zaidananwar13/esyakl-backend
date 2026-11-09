@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Http\Controllers\API\KelasController;
 use App\Services\ClassService;
 use Illuminate\Http\Request;
@@ -26,25 +28,25 @@ class KelasControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function kelas_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'kelas'));
     }
 
-    /** @test */
+    #[Test]
     public function search_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'search'));
     }
 
-    /** @test */
+    #[Test]
     public function my_class_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'myClass'));
     }
 
-    /** @test */
+    #[Test]
     public function controller_uses_api_response_trait()
     {
         $this->assertTrue(
@@ -52,7 +54,7 @@ class KelasControllerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [
@@ -76,7 +78,7 @@ class KelasControllerTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function auth_premium_kelas_static_method_exists()
     {
         $this->assertTrue(method_exists(KelasController::class, 'authPremiumKelas'));

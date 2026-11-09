@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\ClassService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class ClassServiceTest extends TestCase
         $this->service = new ClassService();
     }
 
-    /** @test */
+    #[Test]
     public function get_class_details_returns_nullable_array()
     {
         $this->assertTrue(method_exists($this->service, 'getClassDetails'));
@@ -24,7 +26,7 @@ class ClassServiceTest extends TestCase
         $this->assertTrue($reflection->getReturnType()->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function get_class_details_accepts_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->service, 'getClassDetails');
@@ -36,7 +38,7 @@ class ClassServiceTest extends TestCase
         $this->assertTrue($params[1]->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function get_class_list_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getClassList'));
@@ -45,7 +47,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function enroll_user_to_class_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'enrollUserToClass'));
@@ -54,7 +56,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function enroll_user_to_class_accepts_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->service, 'enrollUserToClass');
@@ -67,7 +69,7 @@ class ClassServiceTest extends TestCase
         $this->assertFalse($params[2]->getDefaultValue());
     }
 
-    /** @test */
+    #[Test]
     public function check_enrollment_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'checkEnrollment'));
@@ -76,7 +78,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function calculate_class_progress_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'calculateClassProgress'));
@@ -85,7 +87,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function complete_class_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'completeClass'));
@@ -94,7 +96,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function search_classes_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'searchClasses'));
@@ -103,7 +105,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function filter_classes_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'filterClasses'));
@@ -112,7 +114,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function submit_review_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'submitReview'));
@@ -121,7 +123,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function update_class_history_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'updateClassHistory'));
@@ -130,7 +132,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function rate_lecture_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'rateLecture'));
@@ -139,7 +141,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_checkout_info_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getCheckoutInfo'));
@@ -148,7 +150,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_active_enrollment_accepts_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->service, 'getActiveEnrollment');
@@ -158,7 +160,7 @@ class ClassServiceTest extends TestCase
         $this->assertEquals('userId', $params[1]->getName());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

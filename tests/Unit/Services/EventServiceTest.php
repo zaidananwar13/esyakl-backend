@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\EventService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class EventServiceTest extends TestCase
         $this->service = new EventService();
     }
 
-    /** @test */
+    #[Test]
     public function get_event_details_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getEventDetails'));
@@ -24,7 +26,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_user_event_status_returns_string()
     {
         $this->assertTrue(method_exists($this->service, 'getUserEventStatus'));
@@ -33,7 +35,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('string', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_active_events_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getActiveEvents'));
@@ -42,7 +44,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_upcoming_events_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getUpcomingEvents'));
@@ -51,7 +53,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_user_event_history_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getUserEventHistory'));
@@ -60,7 +62,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function attend_event_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'attendEvent'));
@@ -69,7 +71,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function attend_event_accepts_event_id_and_user_id()
     {
         $reflection = new \ReflectionMethod($this->service, 'attendEvent');
@@ -81,7 +83,7 @@ class EventServiceTest extends TestCase
         $this->assertEquals('int', $params[1]->getType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_event_by_id_returns_nullable_array()
     {
         $this->assertTrue(method_exists($this->service, 'getEventById'));
@@ -90,7 +92,7 @@ class EventServiceTest extends TestCase
         $this->assertTrue($reflection->getReturnType()->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

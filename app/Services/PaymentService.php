@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Midtrans\Config as MidTransConfig;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class PaymentService
 {
@@ -104,18 +105,50 @@ class PaymentService
             ];
         }
 
-        $datetime = Carbon::parse($paymentData['transaction_time'] ?? now())->format('U');
+        if (!ctype_digit($orderParts[0]) || !ctype_digit($orderParts[1])) {
+            return [
+                'success' => false,
+                'code' => 400,
+                'message' => 'Invalid order ID format'
+            ];
+        }
+
+        $classId = (int) $orderParts[1];
+
+        // SECURITY: an order can only ever unlock one purchase.
+        $alreadyUsed = UserPurchase::where('id_order', (int) $orderParts[0])
+            ->where(function ($q) use ($userId, $classId) {
+                $q->where('id_user', '!=', $userId)->orWhere('id_class', '!=', $classId);
+            })
+            ->exists();
+
+        if ($alreadyUsed) {
+            return [
+                'success' => false,
+                'code' => 409,
+                'message' => 'This order has already been used'
+            ];
+        }
+
+        // SECURITY: never trust the client's claim that a payment succeeded.
+        // Ask Midtrans (server-to-server) for the real transaction status.
+        $verification = $this->verifyTransaction($orderId);
+
+        if (!$verification['success']) {
+            return $verification;
+        }
+
+        $status = $verification['status'];
+        $datetime = Carbon::parse($status->transaction_time ?? now())->format('U');
 
         $updateData = [
-            'id_order' => $orderParts[0],
-            'payment_method' => $paymentData['payment_type'] ?? '',
-            'value' => $paymentData['gross_amount'] ?? 0,
-            'expired_at' => Carbon::now()->addDay(1)->format('U'),
+            'id_order' => (int) $orderParts[0],
+            'payment_method' => (string) ($status->payment_type ?? ''),
+            'value' => (float) ($status->gross_amount ?? 0),
+            'expired_at' => Carbon::now()->addDays(1)->format('U'),
             'created_at' => $datetime,
             'updated_at' => $datetime
         ];
-
-        $classId = (int) $orderParts[1];
 
         $updated = UserPurchase::where('id_user', $userId)
             ->where('id_class', $classId)
@@ -133,6 +166,59 @@ class PaymentService
             'success' => true,
             'class_id' => $classId
         ];
+    }
+
+    /**
+     * Verify a transaction directly with Midtrans.
+     * Only "settlement", or "capture" with fraud_status "accept", counts as paid.
+     */
+    public function verifyTransaction(string $orderId): array
+    {
+        if (empty(config('services.midtrans.server_key'))) {
+            return [
+                'success' => false,
+                'code' => 503,
+                'message' => 'Payment gateway is not configured'
+            ];
+        }
+
+        try {
+            $status = $this->fetchTransactionStatus($orderId);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return [
+                'success' => false,
+                'code' => 402,
+                'message' => 'Unable to verify payment'
+            ];
+        }
+
+        $transactionStatus = $status->transaction_status ?? null;
+        $fraudStatus = $status->fraud_status ?? null;
+        $paid = $transactionStatus === 'settlement'
+            || ($transactionStatus === 'capture' && $fraudStatus === 'accept');
+
+        if (!$paid || (string) ($status->order_id ?? '') !== $orderId) {
+            return [
+                'success' => false,
+                'code' => 402,
+                'message' => 'Payment has not been completed'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'status' => $status
+        ];
+    }
+
+    /**
+     * Server-to-server status lookup (separate method so tests can stub it).
+     */
+    protected function fetchTransactionStatus(string $orderId): object
+    {
+        return (object) Transaction::status($orderId);
     }
 
         private function parseUserName(string $fullName): array

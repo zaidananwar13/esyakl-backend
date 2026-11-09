@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Http\Controllers\API\UserController;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -27,25 +29,19 @@ class UserControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function index_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'index'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'register'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function profile_returns_success_response_with_valid_token()
     {
         $request = Request::create('/api/profile', 'GET', ['api_token' => 'valid_token']);
@@ -68,9 +64,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function profile_returns_unauthorized_response_when_user_not_found()
     {
         $request = Request::create('/api/profile', 'GET', ['api_token' => 'invalid_token']);
@@ -92,9 +86,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function profile_returns_forbidden_response_when_token_is_empty()
     {
         $request = Request::create('/api/profile', 'GET', ['api_token' => '']);
@@ -116,9 +108,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_mentor_returns_success_response()
     {
         $serviceResult = [
@@ -141,9 +131,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_returns_success_response_with_valid_token()
     {
         $request = Request::create('/api/user/profile', 'GET', ['api_token' => 'valid_token']);
@@ -166,9 +154,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_returns_unauthorized_when_user_not_found()
     {
         $request = Request::create('/api/user/profile', 'GET', ['api_token' => 'invalid_token']);
@@ -190,9 +176,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_name_missing()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -206,9 +190,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_email_missing()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -222,9 +204,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_language_missing()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -238,9 +218,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_success_with_valid_data()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -267,9 +245,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_conflict_when_email_taken()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -295,9 +271,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(409, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_returns_validation_error_when_password_missing()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -310,9 +284,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_returns_validation_error_when_confirm_missing()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -325,9 +297,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_requires_old_password_when_provided()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -354,9 +324,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_returns_error_when_password_validation_fails()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -381,9 +349,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_course_update_returns_validation_error_when_status_missing()
     {
         $request = Request::create('/api/user/course/update', 'POST', [
@@ -396,9 +362,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_course_update_returns_validation_error_when_class_missing()
     {
         $request = Request::create('/api/user/course/update', 'POST', [
@@ -411,9 +375,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_course_update_returns_success_with_valid_data()
     {
         $request = Request::create('/api/user/course/update', 'POST', [
@@ -439,9 +401,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_course_update_returns_error_on_failure()
     {
         $request = Request::create('/api/user/course/update', 'POST', [
@@ -466,17 +426,13 @@ class UserControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function edit_user_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'editUser'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_forgot_mail_returns_not_found_when_user_not_exists()
     {
         $request = Request::create('/api/forgot-password', 'POST', [
@@ -500,9 +456,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_forgot_mail_returns_success_when_user_exists()
     {
         $request = Request::create('/api/forgot-password', 'POST', [
@@ -527,9 +481,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function new_password_returns_unauthorized_when_token_invalid()
     {
         $request = Request::create('/api/new-password/invalid_token', 'POST', [
@@ -553,9 +505,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function new_password_returns_success_when_token_valid()
     {
         $request = Request::create('/api/new-password/valid_token', 'POST', [
@@ -580,9 +530,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_returns_success_with_valid_token()
     {
         $request = Request::create('/api/progress', 'GET', ['api_token' => 'valid_token']);
@@ -610,9 +558,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_returns_unauthorized_when_user_not_found()
     {
         $request = Request::create('/api/progress', 'GET', ['api_token' => 'invalid_token']);
@@ -634,9 +580,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function controller_uses_api_response_trait()
     {
         $this->assertTrue(
@@ -647,9 +591,7 @@ class UserControllerTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function controller_has_user_service_dependency()
     {
         $reflection = new \ReflectionClass($this->controller);
@@ -658,9 +600,7 @@ class UserControllerTest extends TestCase
         $this->assertTrue($property->isProtected());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function controller_defines_api_name_constants()
     {
         $reflection = new \ReflectionClass($this->controller);
@@ -670,9 +610,7 @@ class UserControllerTest extends TestCase
         $this->assertTrue($reflection->hasConstant('API_NAME_MENTOR'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_returns_server_error_on_service_failure()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -698,9 +636,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_returns_server_error_when_service_fails()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -725,9 +661,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_password_update_without_old_password_calls_service_with_null()
     {
         $request = Request::create('/api/user/password/update', 'POST', [
@@ -754,9 +688,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_mentor_returns_empty_array_when_no_mentors()
     {
         $serviceResult = [
@@ -779,9 +711,7 @@ class UserControllerTest extends TestCase
         $this->assertEmpty($content['data']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function profile_with_full_data_returns_complete_structure()
     {
         $request = Request::create('/api/profile', 'GET', ['api_token' => 'valid_token']);
@@ -819,9 +749,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Test User', $content['data']['name']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_course_update_with_off_status()
     {
         $request = Request::create('/api/user/course/update', 'POST', [
@@ -848,9 +776,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_public_methods_exist()
     {
         $expectedMethods = [
@@ -877,9 +803,7 @@ class UserControllerTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function constructor_injects_user_service()
     {
         $mockService = Mockery::mock(UserService::class);
@@ -892,9 +816,7 @@ class UserControllerTest extends TestCase
         $this->assertSame($mockService, $property->getValue($controller));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_errors_return_all_missing_fields()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -910,9 +832,7 @@ class UserControllerTest extends TestCase
         $this->assertIsArray($content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_profile_update_with_all_optional_fields()
     {
         $request = Request::create('/api/user/profile/update', 'POST', [
@@ -943,9 +863,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function progress_returns_complete_data_structure()
     {
         $request = Request::create('/api/progress', 'GET', ['api_token' => 'valid_token']);

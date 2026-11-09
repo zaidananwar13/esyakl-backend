@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\QuizService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class QuizServiceTest extends TestCase
         $this->service = new QuizService();
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_for_syllabus_returns_nullable_array()
     {
         $this->assertTrue(method_exists($this->service, 'getQuizForSyllabus'));
@@ -24,7 +26,7 @@ class QuizServiceTest extends TestCase
         $this->assertTrue($reflection->getReturnType()->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_for_syllabus_accepts_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->service, 'getQuizForSyllabus');
@@ -36,7 +38,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('int', $params[1]->getType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_sections_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getQuizSections'));
@@ -45,7 +47,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_questions_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getQuestions'));
@@ -54,19 +56,19 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_options_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'getOptions'));
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_history_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'getQuizHistory'));
     }
 
-    /** @test */
+    #[Test]
     public function submit_quiz_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'submitQuiz'));
@@ -75,7 +77,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function calculate_score_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'calculateScore'));
@@ -84,7 +86,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_key_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getQuizKey'));
@@ -93,7 +95,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_sample_quiz_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getSampleQuiz'));
@@ -102,19 +104,19 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_option_by_id_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'getOptionById'));
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_progress_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'getQuizProgress'));
     }
 
-    /** @test */
+    #[Test]
     public function is_quiz_completed_returns_bool()
     {
         $this->assertTrue(method_exists($this->service, 'isQuizCompleted'));
@@ -123,7 +125,7 @@ class QuizServiceTest extends TestCase
         $this->assertEquals('bool', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

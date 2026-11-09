@@ -41,9 +41,11 @@ class LoginController extends Controller
         }
 
         $user = $result['user'];
-        $userData = $user->toArray();
 
-        auth()->attempt($userData);
+        // NOTE: the API is token based (api_token). The former
+        // auth()->attempt($user->toArray()) call queried
+        // "email_verified_at = '<ISO date>'" against an integer column and
+        // crashed every login on PostgreSQL, so it has been removed.
         Help::setCookie('ssid', Hash::make($user->name));
         Help::updateUserLog(true, $user->id_user);
 
@@ -121,15 +123,10 @@ class LoginController extends Controller
         }
 
         $user = $result['user'];
-        $userData = $user->toArray();
 
         Help::updateUserLog(true, $user->id_user);
 
-        if (isset($userData['id_user'])) {
-            unset($userData['id_user']);
-        }
-
-        auth()->attempt($userData);
+        // auth()->attempt($user->toArray()) removed - see login() above.
         Help::setCookie('ssid', Hash::make($user->name));
 
         // SECURITY FIX: Use secure token exchange instead of passing credentials in URL

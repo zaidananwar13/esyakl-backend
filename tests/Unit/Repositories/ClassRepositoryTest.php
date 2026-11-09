@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Repositories;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\Kelas;
 use App\Repositories\Eloquent\ClassRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,7 +28,7 @@ class ClassRepositoryTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function find_by_id_returns_class_when_found()
     {
         $expectedClass = new Kelas();
@@ -48,7 +50,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals(1, $result->id_class);
     }
 
-    /** @test */
+    #[Test]
     public function find_by_id_returns_null_when_not_found()
     {
         $builderMock = Mockery::mock();
@@ -65,7 +67,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /** @test */
+    #[Test]
     public function find_all_returns_collection()
     {
         $expectedCollection = new Collection([
@@ -84,7 +86,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertCount(2, $result);
     }
 
-    /** @test */
+    #[Test]
     public function get_student_count_returns_integer()
     {
         $this->assertTrue(method_exists($this->repository, 'getStudentCount'));
@@ -93,7 +95,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals('int', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_reviews_returns_collection()
     {
         $this->assertTrue(method_exists($this->repository, 'getReviews'));
@@ -102,7 +104,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals('Illuminate\Support\Collection', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_syllabus_returns_collection()
     {
         $this->assertTrue(method_exists($this->repository, 'getSyllabus'));
@@ -111,7 +113,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals('Illuminate\Support\Collection', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function calculate_rating_returns_float()
     {
         $this->assertTrue(method_exists($this->repository, 'calculateRating'));
@@ -120,7 +122,7 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals('float', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function is_user_enrolled_returns_bool()
     {
         $this->assertTrue(method_exists($this->repository, 'isUserEnrolled'));
@@ -129,19 +131,19 @@ class ClassRepositoryTest extends TestCase
         $this->assertEquals('bool', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function find_with_columns_method_exists()
     {
         $this->assertTrue(method_exists($this->repository, 'findWithColumns'));
     }
 
-    /** @test */
+    #[Test]
     public function get_learning_path_method_exists()
     {
         $this->assertTrue(method_exists($this->repository, 'getLearningPath'));
     }
 
-    /** @test */
+    #[Test]
     public function repository_implements_interface()
     {
         $this->assertInstanceOf(
@@ -150,7 +152,7 @@ class ClassRepositoryTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

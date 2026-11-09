@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Http\Controllers\API\ProfileController;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -26,7 +28,7 @@ class ProfileControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function user_profile_returns_unauthorized_when_no_token()
     {
         $request = Request::create('/api/profile', 'POST', []);
@@ -36,7 +38,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_profile_returns_success_with_valid_token()
     {
         $request = Request::create('/api/profile', 'POST', ['api_token' => 'valid_token']);
@@ -57,7 +59,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_name_missing()
     {
         $request = Request::create('/api/profile/update', 'POST', [
@@ -70,7 +72,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_email_missing()
     {
         $request = Request::create('/api/profile/update', 'POST', [
@@ -83,7 +85,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_profile_update_returns_validation_error_when_language_missing()
     {
         $request = Request::create('/api/profile/update', 'POST', [
@@ -96,7 +98,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_password_update_returns_validation_error_when_password_short()
     {
         $request = Request::create('/api/profile/update/password', 'POST', [
@@ -109,7 +111,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_course_update_returns_validation_error_when_status_missing()
     {
         $request = Request::create('/api/profile/update/course', 'POST', [
@@ -121,7 +123,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function user_course_update_returns_validation_error_when_class_missing()
     {
         $request = Request::create('/api/profile/update/course', 'POST', [
@@ -133,7 +135,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function generate_forgot_mail_returns_success()
     {
         $request = Request::create('/api/forgot-password', 'POST', [
@@ -155,7 +157,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function generate_forgot_mail_returns_not_found()
     {
         $request = Request::create('/api/forgot-password', 'POST', [
@@ -177,7 +179,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function new_password_returns_success()
     {
         $request = Request::create('/api/forgot-password/valid_token', 'POST', [
@@ -199,7 +201,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function new_password_returns_unauthorized_on_invalid_token()
     {
         $request = Request::create('/api/forgot-password/invalid_token', 'POST', [
@@ -221,7 +223,7 @@ class ProfileControllerTest extends TestCase
         $this->assertEquals(401, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function controller_uses_api_response_trait()
     {
         $this->assertTrue(
@@ -229,7 +231,7 @@ class ProfileControllerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

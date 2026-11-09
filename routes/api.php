@@ -49,7 +49,8 @@ Route::get('overview-{id}', [OverviewController::class, 'index']);
 Route::get('kategori', [KategoriController::class, 'index']);
 Route::get('kelas', [KelasController::class, 'kelas']);
 Route::get('kelas/{id}', [KelasController::class, 'index']);
-Route::get('getusertoken', [UserController::class, 'index']);
+// SECURITY: 'getusertoken' removed - it publicly dumped every user's
+// email, phone number, address and birth date (UserController@index).
 
 Route::get('migrasi', [MigrasiController::class, 'index']);
 Route::get('migrasi/{mode}', [MigrasiController::class, 'index']);
@@ -158,14 +159,10 @@ Route::group(['middleware' => ['web']], function () {
 // OAuth code exchange endpoint (for secure token retrieval)
 Route::post('/auth/exchange', [LoginController::class, 'exchangeOAuthCode']);
 
-Route::post('notification/handle', function(Request $request) {
-    DB::table('notification_log')->insert([
-        'id_notification_log' => Str::uuid(),
-        'data' => $request->all(),
-    ]);
-
-    return response($request->all());
-});
+// SECURITY: 'notification/handle' removed. It was unauthenticated, echoed the
+// request body back, and wrote to a 'notification_log' table that does not
+// exist in production (every call returned HTTP 500). Payments are now
+// verified server-to-server in PaymentService::verifyTransaction().
 
 Route::prefix("v2")->group(function () {
     Route::get('overview-{id}', [OverviewController::class, 'index']);
@@ -178,7 +175,7 @@ Route::prefix("v2")->group(function () {
     Route::get('kategori', [KategoriController::class, 'index']);
     Route::get('kelas', [KelasController::class, 'kelas']);
     Route::get('kelas/{id}', [KelasController::class, 'index']);
-    Route::get('getusertoken', [UserController::class, 'index']);
+    // SECURITY: 'getusertoken' removed (public dump of all user PII).
 
     Route::get('migrasi', [MigrasiController::class, 'index']);
     Route::get('migrasi/{mode}', [MigrasiController::class, 'index']);

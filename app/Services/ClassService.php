@@ -406,8 +406,8 @@ class ClassService
 
             $query->where(function ($q) use ($searchTerm) {
                 $q->whereRaw('LOWER(title) LIKE ?', [$searchTerm])
-                    ->orWhereRaw('LOWER(desc) LIKE ?', [$searchTerm])
-                    ->orWhereRaw('LOWER(CAST(id_class_level AS CHAR)) LIKE ?', [$searchTerm]);
+                    ->orWhereRaw('LOWER("desc") LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(CAST(id_class_level AS TEXT)) LIKE ?', [$searchTerm]);
             });
         }
 
@@ -429,7 +429,7 @@ class ClassService
 
             $query->where(function ($q) use ($searchTerm) {
                 $q->whereRaw('LOWER(title) LIKE ?', [$searchTerm])
-                    ->orWhereRaw('LOWER(desc) LIKE ?', [$searchTerm]);
+                    ->orWhereRaw('LOWER("desc") LIKE ?', [$searchTerm]);
             });
         }
 

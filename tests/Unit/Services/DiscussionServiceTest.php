@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\DiscussionService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class DiscussionServiceTest extends TestCase
         $this->service = new DiscussionService();
     }
 
-    /** @test */
+    #[Test]
     public function get_classes_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getClasses'));
@@ -24,7 +26,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function mark_as_viewed_returns_bool()
     {
         $this->assertTrue(method_exists($this->service, 'markAsViewed'));
@@ -33,7 +35,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('bool', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_discussions_by_class_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getDiscussionsByClass'));
@@ -42,7 +44,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function create_discussion_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'createDiscussion'));
@@ -51,7 +53,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function create_discussion_accepts_correct_parameters()
     {
         $reflection = new \ReflectionMethod($this->service, 'createDiscussion');
@@ -63,7 +65,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('content', $params[3]->getName());
     }
 
-    /** @test */
+    #[Test]
     public function add_comment_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'addComment'));
@@ -72,7 +74,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function like_post_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'likePost'));
@@ -81,7 +83,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function delete_comment_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'deleteComment'));
@@ -90,7 +92,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function delete_comment_accepts_user_id_and_comment_id()
     {
         $reflection = new \ReflectionMethod($this->service, 'deleteComment');
@@ -102,7 +104,7 @@ class DiscussionServiceTest extends TestCase
         $this->assertEquals('int', $params[1]->getType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

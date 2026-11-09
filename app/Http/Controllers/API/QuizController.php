@@ -81,7 +81,11 @@ class QuizController extends Controller
     public function freekey(Request $request, $syl = null)
     {
         // SECURITY: Check for admin privileges
-        $user = $request->user() ?? User::where('api_token', $request->input('api_token'))->first();
+        $token = $request->bearerToken() ?: $request->input('api_token');
+        // SECURITY: never query with a null token (it would match "api_token IS NULL").
+        $user = $request->user() ?? (is_string($token) && $token !== ''
+            ? User::where('api_token', $token)->first()
+            : null);
 
         if (!$user || $user->type !== 'admin') {
             return $this->forbiddenResponse(

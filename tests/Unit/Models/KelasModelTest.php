@@ -2,26 +2,28 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\Kelas;
 use Tests\TestCase;
 
 class KelasModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_has_correct_table_name()
     {
         $kelas = new Kelas();
         $this->assertEquals('class', $kelas->getTable());
     }
 
-    /** @test */
+    #[Test]
     public function it_has_correct_primary_key()
     {
         $kelas = new Kelas();
         $this->assertEquals('id_class', $kelas->getKeyName());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $kelas = new Kelas();
@@ -37,7 +39,7 @@ class KelasModelTest extends TestCase
         $this->assertEquals(1, $kelas->id_kategori);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_convert_to_array()
     {
         $kelas = new Kelas();
@@ -49,7 +51,7 @@ class KelasModelTest extends TestCase
         $this->assertEquals('Test Class', $array['title']);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $kelas = new Kelas();

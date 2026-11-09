@@ -2,19 +2,21 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\Event;
 use Tests\TestCase;
 
 class EventModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated()
     {
         $event = new Event();
         $this->assertInstanceOf(Event::class, $event);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $event = new Event();
@@ -34,7 +36,7 @@ class EventModelTest extends TestCase
         $this->assertEquals('active', $event->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $event = new Event();

@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Repositories;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\User;
 use App\Repositories\Eloquent\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
@@ -26,9 +28,7 @@ class UserRepositoryTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_user_by_id()
     {
         $userId = 1;
@@ -50,9 +50,7 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals('Test User', $result->name);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_null_when_user_not_found_by_id()
     {
         $userId = 999;
@@ -68,9 +66,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_user_by_token()
     {
         $token = 'valid_api_token_123';
@@ -93,9 +89,7 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals($token, $result->api_token);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_null_when_user_not_found_by_token()
     {
         $token = 'invalid_token';
@@ -114,9 +108,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_user_by_email()
     {
         $email = 'user@example.com';
@@ -139,9 +131,7 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals($email, $result->email);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_null_when_user_not_found_by_email()
     {
         $email = 'nonexistent@example.com';
@@ -160,9 +150,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_create_user()
     {
         $userData = [
@@ -184,9 +172,7 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals('array', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_update_user()
     {
         $userId = 1;
@@ -212,9 +198,7 @@ class UserRepositoryTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_false_when_update_fails()
     {
         $userId = 999;
@@ -237,9 +221,7 @@ class UserRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_users_by_type()
     {
         $type = 'teacher';
@@ -262,9 +244,7 @@ class UserRepositoryTest extends TestCase
         $this->assertCount(2, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_empty_collection_when_no_users_found_by_type()
     {
         $type = 'nonexistent_type';
@@ -284,9 +264,7 @@ class UserRepositoryTest extends TestCase
         $this->assertCount(0, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_user_with_specific_columns()
     {
         $userId = 1;
@@ -317,9 +295,7 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals($userId, $result->id_user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_find_user_with_default_columns()
     {
         $userId = 1;
@@ -346,9 +322,7 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_null_when_find_with_columns_user_not_found()
     {
         $userId = 999;
@@ -374,9 +348,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repository_implements_interface()
     {
         $this->assertInstanceOf(
@@ -385,9 +357,7 @@ class UserRepositoryTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function repository_has_model_property()
     {
         $reflection = new \ReflectionClass($this->repository);
@@ -397,9 +367,7 @@ class UserRepositoryTest extends TestCase
         $this->assertInstanceOf(User::class, $property->getValue($this->repository));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function find_by_id_calls_model_find()
     {
         $userId = 5;
@@ -415,9 +383,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function find_by_token_uses_where_and_first()
     {
         $token = 'test_token';
@@ -436,9 +402,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function find_by_email_uses_where_and_first()
     {
         $email = 'test@example.com';
@@ -457,9 +421,7 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_returns_true_when_rows_affected_greater_than_zero()
     {
         $userId = 1;
@@ -482,9 +444,7 @@ class UserRepositoryTest extends TestCase
         $this->assertTrue($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function find_by_type_returns_collection()
     {
         $type = 'student';

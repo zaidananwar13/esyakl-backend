@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\AuthService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class AuthServiceTest extends TestCase
         $this->service = new AuthService();
     }
 
-    /** @test */
+    #[Test]
     public function resolve_user_from_token_returns_null_for_empty_token()
     {
         $result = $this->service->resolveUserFromToken('');
@@ -25,14 +27,14 @@ class AuthServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    /** @test */
+    #[Test]
     public function get_user_id_from_token_returns_null_for_empty_token()
     {
         $result = $this->service->getUserIdFromToken('');
         $this->assertNull($result);
     }
 
-    /** @test */
+    #[Test]
     public function login_method_exists_and_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'login'));
@@ -41,7 +43,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function register_method_exists_and_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'register'));
@@ -50,7 +52,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function generate_api_token_returns_string()
     {
         $token = $this->service->generateApiToken();
@@ -59,7 +61,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals(64, strlen($token)); // sha256 hash is 64 characters
     }
 
-    /** @test */
+    #[Test]
     public function generate_api_token_returns_unique_tokens()
     {
         $token1 = $this->service->generateApiToken();
@@ -68,7 +70,7 @@ class AuthServiceTest extends TestCase
         $this->assertNotEquals($token1, $token2);
     }
 
-    /** @test */
+    #[Test]
     public function generate_verification_token_returns_string()
     {
         $token = $this->service->generateVerificationToken();
@@ -77,7 +79,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals(64, strlen($token));
     }
 
-    /** @test */
+    #[Test]
     public function verify_email_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'verifyEmail'));
@@ -86,7 +88,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function handle_oauth_login_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'handleOAuthLogin'));
@@ -95,7 +97,7 @@ class AuthServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_oauth_redirect_url_returns_string()
     {
         $url = $this->service->getOAuthRedirectUrl();
@@ -104,25 +106,25 @@ class AuthServiceTest extends TestCase
         $this->assertStringContainsString('my-class', $url);
     }
 
-    /** @test */
+    #[Test]
     public function send_verification_email_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'sendVerificationEmail'));
     }
 
-    /** @test */
+    #[Test]
     public function resend_verification_email_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'resendVerificationEmail'));
     }
 
-    /** @test */
+    #[Test]
     public function create_from_google_method_exists()
     {
         $this->assertTrue(method_exists($this->service, 'createFromGoogle'));
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

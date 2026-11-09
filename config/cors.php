@@ -15,11 +15,18 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    // API routes are served from the domain root (no "api/" prefix), so the
+    // old ['api/*'] value meant Laravel never applied CORS at all.
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    // Comma-separated list, e.g. "https://arabic-go.com,https://www.arabic-go.com".
+    // The admin panel (CodeIgniter) talks to the database directly, so it needs no CORS entry.
+    'allowed_origins' => array_values(array_filter(array_map('trim', explode(',', (string) env(
+        'CORS_ALLOWED_ORIGINS',
+        'https://arabic-go.com,https://www.arabic-go.com'
+    ))))),
 
     'allowed_origins_patterns' => [],
 

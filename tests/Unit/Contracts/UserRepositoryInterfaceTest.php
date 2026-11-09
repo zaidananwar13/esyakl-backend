@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Contracts;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\Eloquent\UserRepository;
 use Tests\TestCase;
 
 class UserRepositoryInterfaceTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_defines_find_by_id_method()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -24,9 +24,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('int', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_defines_find_by_token_method()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -40,9 +38,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('string', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_defines_find_by_email_method()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -56,9 +52,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('string', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_defines_create_method()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -72,9 +66,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('array', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_defines_update_method()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -90,9 +82,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('array', $parameters[1]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_update_method_returns_bool()
     {
         $reflection = new \ReflectionClass(UserRepositoryInterface::class);
@@ -101,9 +91,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertEquals('bool', $method->getReturnType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function user_repository_implements_interface()
     {
         $interfaces = class_implements(UserRepository::class);
@@ -111,9 +99,7 @@ class UserRepositoryInterfaceTest extends TestCase
         $this->assertContains(UserRepositoryInterface::class, $interfaces);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function interface_has_all_required_methods()
     {
         $requiredMethods = ['findById', 'findByToken', 'findByEmail', 'create', 'update'];

@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\UserService;
 use Tests\TestCase;
 
@@ -19,9 +21,7 @@ class UserServiceTest extends TestCase
     // getAllUsers() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_all_users_returns_array()
     {
         $service = new UserService();
@@ -36,9 +36,7 @@ class UserServiceTest extends TestCase
     // registerUser() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_user_method_has_correct_signature()
     {
         $service = new UserService();
@@ -51,9 +49,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function register_user_extracts_name_from_email_correctly()
     {
         // Test the name extraction logic
@@ -74,9 +70,7 @@ class UserServiceTest extends TestCase
     // getProfile() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_profile_method_has_correct_signature()
     {
         $service = new UserService();
@@ -89,9 +83,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_profile_returns_array_with_required_keys_on_failure()
     {
         // Since we can't mock static methods easily, we test method signature
@@ -104,9 +96,7 @@ class UserServiceTest extends TestCase
     // getMentors() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_mentors_returns_array()
     {
         $service = new UserService();
@@ -121,9 +111,7 @@ class UserServiceTest extends TestCase
     // getUserProfile() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_user_profile_method_has_correct_signature()
     {
         $service = new UserService();
@@ -140,9 +128,7 @@ class UserServiceTest extends TestCase
     // updateUserProfile() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_user_profile_accepts_correct_parameters()
     {
         $service = new UserService();
@@ -161,9 +147,7 @@ class UserServiceTest extends TestCase
         $this->assertNull($parameters[2]->getDefaultValue());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_user_profile_returns_array()
     {
         $service = new UserService();
@@ -176,9 +160,7 @@ class UserServiceTest extends TestCase
     // updatePassword() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_returns_error_when_password_too_short()
     {
         $service = new UserService();
@@ -190,9 +172,7 @@ class UserServiceTest extends TestCase
         $this->assertStringContainsString('password length', $result['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_returns_error_when_confirm_password_too_short()
     {
         $service = new UserService();
@@ -203,9 +183,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals(422, $result['code']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_validates_both_passwords()
     {
         $service = new UserService();
@@ -218,9 +196,7 @@ class UserServiceTest extends TestCase
         $this->assertFalse($result2['success']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_accepts_correct_parameters()
     {
         $service = new UserService();
@@ -235,9 +211,7 @@ class UserServiceTest extends TestCase
         $this->assertTrue($parameters[3]->isOptional());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_validates_minimum_length_boundary()
     {
         $service = new UserService();
@@ -257,9 +231,7 @@ class UserServiceTest extends TestCase
     // updateCourseStatus() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_course_status_accepts_correct_parameters()
     {
         $service = new UserService();
@@ -276,9 +248,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('string', $parameters[2]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_course_status_returns_array()
     {
         $service = new UserService();
@@ -291,9 +261,7 @@ class UserServiceTest extends TestCase
     // generateForgotPasswordMail() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_forgot_password_mail_accepts_email_parameter()
     {
         $service = new UserService();
@@ -307,9 +275,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('string', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_forgot_password_mail_returns_array()
     {
         $service = new UserService();
@@ -322,9 +288,7 @@ class UserServiceTest extends TestCase
     // setNewPassword() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_new_password_accepts_correct_parameters()
     {
         $service = new UserService();
@@ -340,9 +304,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('string', $parameters[1]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function set_new_password_returns_array()
     {
         $service = new UserService();
@@ -355,9 +317,7 @@ class UserServiceTest extends TestCase
     // getProgress() Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_progress_accepts_token_parameter()
     {
         $service = new UserService();
@@ -371,9 +331,7 @@ class UserServiceTest extends TestCase
         $this->assertEquals('string', $parameters[0]->getType()->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function get_progress_returns_array()
     {
         $service = new UserService();
@@ -386,9 +344,7 @@ class UserServiceTest extends TestCase
     // General Service Tests
     // ============================================================
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_methods_return_array()
     {
         $service = new UserService();
@@ -415,9 +371,7 @@ class UserServiceTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function service_can_be_instantiated()
     {
         $service = new UserService();
@@ -425,9 +379,7 @@ class UserServiceTest extends TestCase
         $this->assertInstanceOf(UserService::class, $service);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function update_password_response_structure_on_validation_failure()
     {
         $service = new UserService();
@@ -439,9 +391,7 @@ class UserServiceTest extends TestCase
         $this->assertFalse($result['success']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_public_methods_are_accessible()
     {
         $service = new UserService();
@@ -457,9 +407,7 @@ class UserServiceTest extends TestCase
         $this->assertGreaterThanOrEqual($expectedCount, count($publicMethods));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function password_length_validation_is_consistent()
     {
         $service = new UserService();

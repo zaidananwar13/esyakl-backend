@@ -37,8 +37,15 @@ class CheckApiToken
             return $this->unauthorizedResponse('Invalid or expired token');
         }
 
-        // Store user in request for later use
-        $request->merge(['authenticated_user' => $user]);
+        // Store user in request for later use.
+        // SECURITY: controllers look the user up again via input('api_token').
+        // When the token arrived only as a Bearer header that input was null,
+        // and where('api_token', null) became "api_token IS NULL", resolving
+        // to an arbitrary staff account. Always expose the verified token.
+        $request->merge([
+            'api_token' => $token,
+            'authenticated_user' => $user,
+        ]);
         $request->setUserResolver(fn() => $user);
 
         Helper::updateUserLog(false, $user->id_user);

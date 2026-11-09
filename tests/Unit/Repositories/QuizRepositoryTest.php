@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Repositories;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Repositories\Eloquent\QuizRepository;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
@@ -16,13 +18,13 @@ class QuizRepositoryTest extends TestCase
         $this->repository = new QuizRepository();
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_by_syllabus_method_exists()
     {
         $this->assertTrue(method_exists($this->repository, 'getQuizBySyllabus'));
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_sections_returns_collection()
     {
         $this->assertTrue(method_exists($this->repository, 'getQuizSections'));
@@ -31,7 +33,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('Illuminate\Support\Collection', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_questions_returns_collection()
     {
         $this->assertTrue(method_exists($this->repository, 'getQuestions'));
@@ -40,7 +42,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('Illuminate\Support\Collection', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_options_returns_collection()
     {
         $this->assertTrue(method_exists($this->repository, 'getOptions'));
@@ -49,13 +51,13 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('Illuminate\Support\Collection', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_quiz_history_method_exists()
     {
         $this->assertTrue(method_exists($this->repository, 'getQuizHistory'));
     }
 
-    /** @test */
+    #[Test]
     public function save_quiz_attempt_returns_quiz_student()
     {
         $this->assertTrue(method_exists($this->repository, 'saveQuizAttempt'));
@@ -64,7 +66,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('App\Models\QuizStudent', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function save_quiz_answer_returns_quiz_answer()
     {
         $this->assertTrue(method_exists($this->repository, 'saveQuizAnswer'));
@@ -73,13 +75,13 @@ class QuizRepositoryTest extends TestCase
         $this->assertEquals('App\Models\QuizAnswer', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_correct_answer_method_exists()
     {
         $this->assertTrue(method_exists($this->repository, 'getCorrectAnswer'));
     }
 
-    /** @test */
+    #[Test]
     public function get_text_answer_returns_nullable_string()
     {
         $this->assertTrue(method_exists($this->repository, 'getTextAnswer'));
@@ -88,7 +90,7 @@ class QuizRepositoryTest extends TestCase
         $this->assertTrue($reflection->getReturnType()->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

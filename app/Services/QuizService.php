@@ -412,7 +412,9 @@ class QuizService
 
         public function getOptionById(int $optionId)
     {
+        // SECURITY: public endpoint - never expose the answer key (is_true).
         return DB::table('option')
+            ->select('id_option', 'id_question', 'option', 'image', 'order_number', 'created_at', 'updated_at')
             ->where('id_option', $optionId)
             ->get();
     }

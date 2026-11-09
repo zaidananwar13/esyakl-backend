@@ -2,19 +2,21 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\Quiz;
 use Tests\TestCase;
 
 class QuizModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated()
     {
         $quiz = new Quiz();
         $this->assertInstanceOf(Quiz::class, $quiz);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $quiz = new Quiz();
@@ -28,7 +30,7 @@ class QuizModelTest extends TestCase
         $this->assertEquals(70, $quiz->pass_grade);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $quiz = new Quiz();

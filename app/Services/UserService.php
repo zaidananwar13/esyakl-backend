@@ -167,7 +167,7 @@ class UserService
                     $due = $classProject->expired;
 
                     if ($due->toDateString() > $present->toDateString()) {
-                        $diff = $due->diffInDays($present);
+                        $diff = (int) $due->diffInDays($present, true);
                         $classTemp["project_class"]["status"] = "on-progress";
                         $classTemp["project_class"]["due"] = "$diff days";
 
@@ -321,8 +321,9 @@ class UserService
             ];
         }
 
+        // 'password' is in User::$hidden, so read it before toArray() drops it.
+        $password = $user->password;
         $user = $user->toArray();
-        $password = $user['password'];
         $idUser = $user['id_user'];
         $user['joined_at'] = Carbon::createFromTimestamp($user['joined_at'])->format('M d, Y, g:i:s A');
         unset($user['id_user']);
@@ -767,7 +768,7 @@ class UserService
             ->first();
 
         $userLogTime = $userLog ? Carbon::parse($userLog->time) : Carbon::now();
-        $userLifeTime = Helper::secToHour($userLoginTime->diffInSeconds($userLogTime));
+        $userLifeTime = Helper::secToHour((int) $userLoginTime->diffInSeconds($userLogTime, true));
 
         $login = UserLog::where('id_user', $user->id_user)
             ->where('status', true)
@@ -799,7 +800,7 @@ class UserService
             } else {
                 $first = Carbon::parse($waktu[0]);
                 $last = Carbon::parse($waktu[count($waktu) - 1]);
-                $waktu = Helper::secToHour($first->diffInSeconds($last));
+                $waktu = Helper::secToHour((int) $first->diffInSeconds($last, true));
             }
             $temp[] = $waktu;
         }

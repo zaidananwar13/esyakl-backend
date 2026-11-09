@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Traits;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Traits\ApiResponseTrait;
 use Tests\TestCase;
 
@@ -9,9 +11,7 @@ class ApiResponseTraitTest extends TestCase
 {
     use ApiResponseTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function success_response_returns_correct_structure()
     {
         $response = $this->successResponse('Test', ['key' => 'value'], 'Success message');
@@ -28,9 +28,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals(['key' => 'value'], $content['data']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function success_response_uses_default_message()
     {
         $response = $this->successResponse('Test', null);
@@ -40,9 +38,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Retrieving data successful!', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function success_response_includes_api_name_in_title()
     {
         $response = $this->successResponse('UserAPI', null);
@@ -52,9 +48,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertStringContainsString('UserAPI API', $content['title']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function success_response_accepts_custom_code()
     {
         $response = $this->successResponse('Test', null, 'Created', 201);
@@ -65,9 +59,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals(201, $content['code']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function error_response_returns_correct_structure()
     {
         $response = $this->errorResponse('Test', 'Error message', 400);
@@ -82,9 +74,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Error message', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function error_response_uses_default_values()
     {
         $response = $this->errorResponse('Test');
@@ -95,9 +85,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Not Found', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function error_response_includes_data_when_provided()
     {
         $response = $this->errorResponse('Test', 'Error', 400, ['error_details' => 'Something']);
@@ -108,9 +96,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals(['error_details' => 'Something'], $content['data']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function error_response_excludes_data_when_null()
     {
         $response = $this->errorResponse('Test', 'Error', 400, null);
@@ -120,9 +106,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertArrayNotHasKey('data', $content);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_response_returns_401()
     {
         $response = $this->unauthorizedResponse('Test', 'Custom unauthorized message');
@@ -134,9 +118,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Custom unauthorized message', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_response_uses_default_message()
     {
         $response = $this->unauthorizedResponse('Test');
@@ -146,9 +128,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Unauthorized', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forbidden_response_returns_403()
     {
         $response = $this->forbiddenResponse('Test', 'Custom forbidden message');
@@ -160,9 +140,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Custom forbidden message', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function forbidden_response_uses_default_message()
     {
         $response = $this->forbiddenResponse('Test');
@@ -172,9 +150,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Access Forbidden', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function not_found_response_returns_404()
     {
         $response = $this->notFoundResponse('Test', 'Resource not found');
@@ -186,9 +162,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Resource not found', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function not_found_response_uses_default_message()
     {
         $response = $this->notFoundResponse('Test');
@@ -198,9 +172,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Not Found', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function server_error_response_returns_500()
     {
         $response = $this->serverErrorResponse('Test', 'Internal error');
@@ -212,9 +184,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Internal error', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function server_error_response_uses_default_message()
     {
         $response = $this->serverErrorResponse('Test');
@@ -224,9 +194,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Something went wrong', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function conflict_response_returns_409()
     {
         $response = $this->conflictResponse('Test', 'Email already exists');
@@ -238,9 +206,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Email already exists', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function conflict_response_uses_default_message()
     {
         $response = $this->conflictResponse('Test');
@@ -250,9 +216,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals('Already registered', $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_error_response_returns_422()
     {
         $errors = ['The email field is required.', 'The name field is required.'];
@@ -269,9 +233,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertEquals($errors, $content['message']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function validation_error_response_includes_title()
     {
         $response = $this->validationErrorResponse('UserAPI', ['Error']);
@@ -282,9 +244,7 @@ class ApiResponseTraitTest extends TestCase
         $this->assertStringContainsString('UserAPI API', $content['title']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function all_response_methods_include_app_title_prefix()
     {
         $responses = [

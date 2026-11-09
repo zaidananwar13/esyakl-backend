@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Services;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Services\BlogService;
 use Tests\TestCase;
 
@@ -15,7 +17,7 @@ class BlogServiceTest extends TestCase
         $this->service = new BlogService();
     }
 
-    /** @test */
+    #[Test]
     public function get_all_blogs_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getAllBlogs'));
@@ -24,7 +26,7 @@ class BlogServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_all_blogs_accepts_nullable_user_id()
     {
         $reflection = new \ReflectionMethod($this->service, 'getAllBlogs');
@@ -34,7 +36,7 @@ class BlogServiceTest extends TestCase
         $this->assertTrue($params[0]->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function get_blog_by_id_returns_nullable_array()
     {
         $this->assertTrue(method_exists($this->service, 'getBlogById'));
@@ -43,7 +45,7 @@ class BlogServiceTest extends TestCase
         $this->assertTrue($reflection->getReturnType()->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function get_blog_by_id_accepts_blog_id_and_optional_user_id()
     {
         $reflection = new \ReflectionMethod($this->service, 'getBlogById');
@@ -55,7 +57,7 @@ class BlogServiceTest extends TestCase
         $this->assertTrue($params[1]->allowsNull());
     }
 
-    /** @test */
+    #[Test]
     public function like_blog_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'likeBlog'));
@@ -64,7 +66,7 @@ class BlogServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function like_blog_accepts_blog_id_and_user_id()
     {
         $reflection = new \ReflectionMethod($this->service, 'likeBlog');
@@ -76,7 +78,7 @@ class BlogServiceTest extends TestCase
         $this->assertEquals('int', $params[1]->getType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function get_categories_returns_array()
     {
         $this->assertTrue(method_exists($this->service, 'getCategories'));
@@ -85,7 +87,7 @@ class BlogServiceTest extends TestCase
         $this->assertEquals('array', $reflection->getReturnType()->getName());
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

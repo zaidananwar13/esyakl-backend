@@ -2,19 +2,21 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\Blog;
 use Tests\TestCase;
 
 class BlogModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated()
     {
         $blog = new Blog();
         $this->assertInstanceOf(Blog::class, $blog);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $blog = new Blog();
@@ -30,7 +32,7 @@ class BlogModelTest extends TestCase
         $this->assertEquals('blog.jpg', $blog->image);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $blog = new Blog();

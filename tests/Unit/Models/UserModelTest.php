@@ -2,41 +2,35 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\User;
 use Tests\TestCase;
 
 class UserModelTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_correct_table_name()
     {
         $user = new User();
         $this->assertEquals('user', $user->getTable());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_correct_primary_key()
     {
         $user = new User();
         $this->assertEquals('id_user', $user->getKeyName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_uses_unix_timestamp_date_format()
     {
         $user = new User();
         $this->assertEquals('U', $user->getDateFormat());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $user = new User();
@@ -72,27 +66,21 @@ class UserModelTest extends TestCase
         $this->assertEquals('{"twitter": "@test"}', $user->social_media);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_is_instance_of_authenticatable()
     {
         $user = new User();
         $this->assertInstanceOf(\Illuminate\Foundation\Auth\User::class, $user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_implements_must_verify_email()
     {
         $user = new User();
         $this->assertInstanceOf(\Illuminate\Contracts\Auth\MustVerifyEmail::class, $user);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_uses_notifiable_trait()
     {
         $user = new User();
@@ -100,9 +88,7 @@ class UserModelTest extends TestCase
         $this->assertTrue(method_exists($user, 'notifications'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_convert_to_array()
     {
         $user = new User();
@@ -116,9 +102,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('test@example.com', $array['email']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_mass_assign_attributes_via_fill()
     {
         $user = new User();
@@ -131,9 +115,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('mass@example.com', $user->email);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_handles_null_attributes_gracefully()
     {
         $user = new User();
@@ -144,9 +126,7 @@ class UserModelTest extends TestCase
         $this->assertNull($user->api_token);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_key_value()
     {
         $user = new User();
@@ -155,27 +135,21 @@ class UserModelTest extends TestCase
         $this->assertEquals(123, $user->getKey());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_check_if_incrementing_is_true()
     {
         $user = new User();
         $this->assertTrue($user->getIncrementing());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_qualified_key_name()
     {
         $user = new User();
         $this->assertEquals('user.id_user', $user->getQualifiedKeyName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_extends_authenticatable()
     {
         $user = new User();
@@ -187,9 +161,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('Illuminate\Foundation\Auth\User', $parent->getName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_auth_identifier()
     {
         $user = new User();
@@ -198,9 +170,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(123, $user->getAuthIdentifier());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_timestamps_enabled_by_default()
     {
         $user = new User();
@@ -208,9 +178,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($user->usesTimestamps());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_serialize_to_json()
     {
         $user = new User();
@@ -224,9 +192,7 @@ class UserModelTest extends TestCase
         $this->assertStringContainsString('json@example.com', $json);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_access_attributes_dynamically()
     {
         $user = new User();
@@ -236,9 +202,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('Dynamic User', $user->getAttribute('name'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_has_correct_auth_identifier_name()
     {
         $user = new User();
@@ -246,9 +210,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('id_user', $user->getAuthIdentifierName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_auth_password()
     {
         $user = new User();
@@ -257,9 +219,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('hashed_password_123', $user->getAuthPassword());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_remember_token()
     {
         $user = new User();
@@ -268,9 +228,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('remember_token_value', $user->getRememberToken());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_set_remember_token()
     {
         $user = new User();
@@ -279,9 +237,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('new_remember_token', $user->remember_token);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_get_remember_token_name()
     {
         $user = new User();
@@ -289,9 +245,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('remember_token', $user->getRememberTokenName());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_correct_type_for_key()
     {
         $user = new User();
@@ -299,9 +253,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('int', $user->getKeyType());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_check_attribute_existence()
     {
         $user = new User();
@@ -311,9 +263,7 @@ class UserModelTest extends TestCase
         $this->assertFalse(isset($user->nonexistent_attribute));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_can_unset_attribute()
     {
         $user = new User();

@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Helpers;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Helper;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class HelperTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function sec_to_hour_converts_seconds_correctly()
     {
         // 3600 seconds = 1 hour
@@ -26,18 +26,14 @@ class HelperTest extends TestCase
         $this->assertEquals(0.5, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sec_to_hour_handles_zero()
     {
         $result = Helper::secToHour(0);
         $this->assertEquals(0.0, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sec_to_hour_rounds_to_one_decimal()
     {
         // 5400 seconds = 1.5 hours
@@ -49,9 +45,7 @@ class HelperTest extends TestCase
         $this->assertEquals(1.1, $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function time_elapsed_string_returns_human_readable_format()
     {
         // Test that the method exists and returns a string
@@ -61,9 +55,7 @@ class HelperTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function time_elapsed_string_handles_recent_times()
     {
         $result = Helper::time_elapsed_string(Carbon::now()->subSeconds(30));
@@ -71,9 +63,7 @@ class HelperTest extends TestCase
         $this->assertIsString($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function time_elapsed_string_handles_past_dates()
     {
         $result = Helper::time_elapsed_string(Carbon::now()->subDays(7));
@@ -83,9 +73,7 @@ class HelperTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_returns_401_response()
     {
         $response = Helper::unauthorized('TestAPI');
@@ -103,9 +91,7 @@ class HelperTest extends TestCase
         $this->assertNull($content['data']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unauthorized_includes_api_name_in_title()
     {
         $response = Helper::unauthorized('UserAPI');
@@ -115,9 +101,7 @@ class HelperTest extends TestCase
         $this->assertStringContainsString('UserAPI', $content['title']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_quiz_structures_quiz_data_correctly()
     {
         $params = [
@@ -140,9 +124,7 @@ class HelperTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generate_quiz_handles_empty_params()
     {
         $result = Helper::generateQuiz([]);
@@ -151,17 +133,13 @@ class HelperTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function helper_class_exists()
     {
         $this->assertTrue(class_exists(Helper::class));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function helper_has_all_expected_methods()
     {
         $expectedMethods = [
@@ -185,9 +163,7 @@ class HelperTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function helper_methods_are_static()
     {
         $reflection = new \ReflectionClass(Helper::class);
@@ -210,9 +186,7 @@ class HelperTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function helper_uses_api_response_trait()
     {
         $traits = class_uses(Helper::class);

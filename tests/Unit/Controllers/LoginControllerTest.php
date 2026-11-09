@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Controllers;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Http\Controllers\API\LoginController;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
@@ -26,7 +28,7 @@ class LoginControllerTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function login_returns_validation_error_when_email_is_null()
     {
         $request = Request::create('/api/login', 'POST', [
@@ -39,7 +41,7 @@ class LoginControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function login_returns_validation_error_when_password_is_null()
     {
         $request = Request::create('/api/login', 'POST', [
@@ -52,7 +54,7 @@ class LoginControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function login_returns_validation_error_when_email_too_short()
     {
         $request = Request::create('/api/login', 'POST', [
@@ -65,7 +67,7 @@ class LoginControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function login_returns_validation_error_when_password_too_short()
     {
         $request = Request::create('/api/login', 'POST', [
@@ -78,7 +80,7 @@ class LoginControllerTest extends TestCase
         $this->assertEquals(422, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function login_returns_forbidden_on_invalid_credentials()
     {
         $request = Request::create('/api/login', 'POST', [
@@ -101,37 +103,37 @@ class LoginControllerTest extends TestCase
         $this->assertEquals(403, $response->getStatusCode());
     }
 
-    /** @test */
+    #[Test]
     public function register_email_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'registerEmail'));
     }
 
-    /** @test */
+    #[Test]
     public function verify_email_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'verifyEmail'));
     }
 
-    /** @test */
+    #[Test]
     public function create_email_verifier_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'createEmailVerifier'));
     }
 
-    /** @test */
+    #[Test]
     public function redirect_to_provider_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'redirectToProvider'));
     }
 
-    /** @test */
+    #[Test]
     public function handle_provider_callback_method_exists()
     {
         $this->assertTrue(method_exists($this->controller, 'handleProviderCallback'));
     }
 
-    /** @test */
+    #[Test]
     public function controller_uses_api_response_trait()
     {
         $this->assertTrue(
@@ -139,7 +141,7 @@ class LoginControllerTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function all_public_methods_exist()
     {
         $methods = [

@@ -2,19 +2,21 @@
 
 namespace Tests\Unit\Models;
 
+use PHPUnit\Framework\Attributes\Test;
+
 use App\Models\ClassStudent;
 use Tests\TestCase;
 
 class ClassStudentModelTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_can_be_instantiated()
     {
         $classStudent = new ClassStudent();
         $this->assertInstanceOf(ClassStudent::class, $classStudent);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_set_and_get_attributes()
     {
         $classStudent = new ClassStudent();
@@ -32,7 +34,7 @@ class ClassStudentModelTest extends TestCase
         $this->assertNull($classStudent->completed_at);
     }
 
-    /** @test */
+    #[Test]
     public function it_extends_model()
     {
         $classStudent = new ClassStudent();

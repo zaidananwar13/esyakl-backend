@@ -30,10 +30,13 @@ class ProjectController extends Controller
 
     public function projectClass(Request $request, $class_id)
     {
-        $result = $this->projectService->getProjectByClass(
-            $request->input('api_token'),
-            $class_id
-        );
+        $token = $request->bearerToken() ?: $request->input('api_token');
+
+        if (!is_string($token) || $token === '') {
+            return $this->unauthorizedResponse(self::API_NAME, 'You must login first!');
+        }
+
+        $result = $this->projectService->getProjectByClass($token, (int) $class_id);
 
         if (!$result['success']) {
             if ($result['code'] === 401) {

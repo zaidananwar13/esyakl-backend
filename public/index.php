@@ -1,7 +1,7 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE');
-header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
+// CORS is handled by Illuminate\Http\Middleware\HandleCors (config/cors.php,
+// CORS_ALLOWED_ORIGINS). Do not add raw Access-Control-* headers here: they
+// opened the API to every origin and would now be sent twice.
 
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;

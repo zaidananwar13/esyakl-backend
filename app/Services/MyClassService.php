@@ -251,7 +251,7 @@ class MyClassService
         ];
 
         if ($projectExpired->toDateString() > $present->toDateString()) {
-            $diff = $projectExpired->diffInDays($present);
+            $diff = (int) $projectExpired->diffInDays($present, true);
 
             $projectClass['status'] = 'on-progress';
             $projectClass['due'] = "$diff days";
@@ -309,7 +309,7 @@ class MyClassService
 
         $userLog = $userLog ? Carbon::parse($userLog->time) : Carbon::now();
 
-        return Helper::secToHour($userLogin->diffInSeconds($userLog));
+        return Helper::secToHour((int) $userLogin->diffInSeconds($userLog, true));
     }
 
         public function calculateMonthlySpent(int $userId): array
@@ -345,7 +345,7 @@ class MyClassService
             } else {
                 $first = Carbon::parse($waktu[0]);
                 $last = Carbon::parse($waktu[count($waktu) - 1]);
-                $timeValues[] = Helper::secToHour($first->diffInSeconds($last)) / 10;
+                $timeValues[] = Helper::secToHour((int) $first->diffInSeconds($last, true)) / 10;
             }
         }
 
