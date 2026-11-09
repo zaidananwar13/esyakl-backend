@@ -118,8 +118,9 @@ class ClassroomService
                 'id_class' => $teacher->id_class,
                 'type' => $teacher->type,
                 'status' => $teacher->status,
-                'created_at' => $teacher->getRawOriginal('created_at'),
-                'updated_at' => $teacher->getRawOriginal('updated_at'),
+                // Serialized like the Laravel 8 model was (ISO date string).
+                'created_at' => $teacher->toArray()['created_at'] ?? null,
+                'updated_at' => $teacher->toArray()['updated_at'] ?? null,
                 'id_teacher' => $teacher->id_user,
                 'nama' => $userData->nama,
                 'foto' => $userData->foto,

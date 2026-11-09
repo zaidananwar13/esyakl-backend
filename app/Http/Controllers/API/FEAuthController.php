@@ -47,7 +47,11 @@ class FEAuthController extends Controller
             return $this->notFoundResponse(self::API_NAME, $result['message']);
         }
 
-        return $this->successResponse(self::API_NAME, (object) $result['data'], 'Retrieving data successful!');
+        // Legacy contract: id_class is echoed back exactly as the client sent it (a string).
+        $data = $result['data'];
+        $data['id_class'] = $classId;
+
+        return $this->successResponse(self::API_NAME, (object) $data, 'Retrieving data successful!');
     }
 
     public function feAuthorizer(Request $request)

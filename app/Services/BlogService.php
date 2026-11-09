@@ -98,7 +98,7 @@ class BlogService
             'image' => MediaHelper::getMediaUrl($blog->image),
             'likes' => $likesCount,
             'liked' => $liked,
-            'posted_at' => Carbon::createFromTimestamp(Carbon::parse($blog->created_at)->format('U'))->format('d M Y'),
+            'posted_at' => Carbon::createFromTimestamp(Carbon::parse($blog->created_at)->format('U'), config('app.timezone'))->format('d M Y'),
         ];
     }
 
@@ -117,7 +117,7 @@ class BlogService
                 'user' => [
                     'name' => $user->name,
                     'img' => $user->avatar_original,
-                    'time' => Carbon::createFromTimestamp($comment->time)->format('Y F d | H:m:s'),
+                    'time' => Carbon::createFromTimestamp($comment->time, config('app.timezone'))->format('Y F d | H:m:s'),
                 ],
                 'id_comment' => $comment->id,
                 'is_commented' => $userId ? ($user->id_user == $userId) : false,

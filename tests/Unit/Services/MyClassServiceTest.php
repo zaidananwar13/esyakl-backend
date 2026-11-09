@@ -95,10 +95,11 @@ class MyClassServiceTest extends TestCase
         $this->assertCount(1, $result);
     }
 
-    public function test_calculate_today_spent_returns_string()
+    public function test_calculate_today_spent_returns_number()
     {
+        // Legacy contract: today_spent is a JSON number (the dashboard formats it as a number).
         $result = $this->service->calculateTodaySpent(1);
-        $this->assertIsString($result);
+        $this->assertIsFloat($result);
     }
 
     public function test_calculate_monthly_spent_returns_array()

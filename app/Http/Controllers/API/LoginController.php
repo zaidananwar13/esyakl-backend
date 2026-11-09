@@ -42,7 +42,8 @@ class LoginController extends Controller
         $result = $this->authService->login($request->input('email'), $request->input('password'));
 
         if (!$result['success']) {
-            return $this->forbiddenResponse(self::API_NAME, $result['message']);
+            // Legacy contract: code was the string "403".
+            return $this->legacyResponse(self::API_NAME, ['code' => '403', 'message' => $result['message']], 403);
         }
 
         $user = $result['user'];

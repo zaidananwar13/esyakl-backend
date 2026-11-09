@@ -150,7 +150,11 @@ class DiscussionService
                 'user' => [
                     'name' => $user->name,
                     'img' => $user->avatar_original,
-                    'time' => $comment->created_at,
+                    // ISO-8601 string like the Laravel 8 API (a raw timestamp breaks the
+                    // frontend's date rendering).
+                    'time' => $comment->created_at instanceof \DateTimeInterface
+                        ? \Illuminate\Support\Carbon::instance($comment->created_at)->toJSON()
+                        : \Illuminate\Support\Carbon::createFromTimestamp((int) $comment->created_at)->toJSON(),
                     'is_teacher' => $user->type === 'teacher',
                 ],
                 'id_comment' => $comment->id_comment,

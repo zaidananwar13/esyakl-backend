@@ -145,7 +145,7 @@ class UserService
                         ->where("id_class_student", $class["id_class_student"])->first();
 
                     if ($classProject !== null) {
-                        $classProject->expired = Carbon::createFromTimestamp($classProject->expired);
+                        $classProject->expired = Carbon::createFromTimestamp($classProject->expired, config('app.timezone'));
                     }
                 }
 
@@ -207,7 +207,7 @@ class UserService
                         $classTemp["progress_class"] = [$mySyls->order_number, $syls->order_number];
                     }
 
-                    $classTemp["expired"] = Carbon::createFromTimestamp($histories->expired_at)->format('d M Y');
+                    $classTemp["expired"] = Carbon::createFromTimestamp($histories->expired_at, config('app.timezone'))->format('d M Y');
                 }
 
                 $temp[] = $classTemp;
@@ -325,7 +325,7 @@ class UserService
         $password = $user->password;
         $user = $user->toArray();
         $idUser = $user['id_user'];
-        $user['joined_at'] = Carbon::createFromTimestamp($user['joined_at'])->format('M d, Y, g:i:s A');
+        $user['joined_at'] = Carbon::createFromTimestamp($user['joined_at'], config('app.timezone'))->format('M d, Y, g:i:s A');
         unset($user['id_user']);
 
         $language = Bahasa::select('id_bahasa as id', 'bahasa as language')->get();

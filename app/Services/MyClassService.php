@@ -139,7 +139,7 @@ class MyClassService
                     ->first();
 
                 if ($histories) {
-                    $classTemp['expired'] = Carbon::createFromTimestamp($histories->expired_at)->format('d M Y');
+                    $classTemp['expired'] = Carbon::createFromTimestamp($histories->expired_at, config('app.timezone'))->format('d M Y');
                 }
             } else {
                 $classTemp['progress_class'] = [0, 0];
@@ -200,7 +200,11 @@ class MyClassService
 
                 if ($classData) {
                     $classTemp = $classData->toArray();
-                    $classTemp['date'] = Carbon::createFromTimestamp($enrollment->expired_at)->format('Y-m-d');
+                    // Legacy data has placeholder expiries (e.g. expired_at = 1). The Laravel 8 API
+                    // showed today's date for those, never 1970-01-01.
+                    $classTemp['date'] = ((int) $enrollment->expired_at) > 31536000
+                        ? Carbon::createFromTimestamp($enrollment->expired_at, config('app.timezone'))->format('Y-m-d')
+                        : Carbon::now()->format('Y-m-d');
                     $classes[] = $classTemp;
                 }
             }
@@ -224,8 +228,10 @@ class MyClassService
             ->where('id_class_student', $classStudentId)
             ->first();
 
+        // Same as the Laravel 8 API: a class whose project the student has not started is
+        // "No Project Yet" (a string the dashboard renders), not null.
         if (!$projectUser) {
-            return ['project_class' => null, 'project' => null];
+            return ['project_class' => 'No Project Yet', 'project' => null];
         }
 
         $projectPass = DB::table('project')
@@ -239,7 +245,7 @@ class MyClassService
             ->where('id_project', $projectUser->id_project)
             ->first();
 
-        $projectExpired = Carbon::createFromTimestamp($projectUser->expired);
+        $projectExpired = Carbon::createFromTimestamp($projectUser->expired, config('app.timezone'));
         $present = Carbon::now();
 
         $projectClass = [
@@ -281,7 +287,9 @@ class MyClassService
         return count($projects) > 0 ? $projects : "You haven't taken a project yet";
     }
 
-        public function calculateTodaySpent(int $userId): string
+        // float, not string: the Laravel 8 API returned a JSON number (e.g. 0.9) and the
+        // dashboard does arithmetic/formatting on it.
+        public function calculateTodaySpent(int $userId): float
     {
         $userLogins = UserLog::where('id_user', $userId)
             ->where('status', true)

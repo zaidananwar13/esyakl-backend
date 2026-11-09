@@ -313,6 +313,7 @@ class ClassService
                 'star' => $review->star,
                 'nama' => $user->name ?? 'Unknown',
                 'img' => $user->avatar_original ?? 'user.png',
+                'content' => $review->content, // legacy field name, still read by the frontend
                 'comment' => $review->content,
                 'rating' => $review->star,
                 'time' => DateHelper::formatTime($review->time),
