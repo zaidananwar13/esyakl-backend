@@ -56,7 +56,8 @@ class ProfileController extends Controller
             foreach ($validator->getMessageBag()->toArray() as $msg) {
                 $messages[] = $msg[0];
             }
-            return $this->validationErrorResponse(self::API_NAME, $messages);
+            // Legacy contract: validator errors were HTTP 200 {status: 200, message: [...]}.
+            return $this->legacyResponse(self::API_NAME, ['status' => 200, 'message' => $messages], 200);
         }
 
         $data = [
@@ -84,7 +85,7 @@ class ProfileController extends Controller
             return $this->serverErrorResponse(self::API_NAME, $result['message']);
         }
 
-        return $this->successResponse(self::API_NAME, null, $result['message']);
+        return $this->successResponse(self::API_NAME, null, 'Ok. Update data successfull');
     }
 
     public function userPasswordUpdate(Request $request)
@@ -92,7 +93,7 @@ class ProfileController extends Controller
         $input = $request->all();
 
         if (strlen($request->input('password')) < 6 || strlen($request->input('password_confirm')) < 6) {
-            return $this->validationErrorResponse(self::API_NAME, ['Invalid Input. Please check password length!']);
+            return $this->legacyResponse(self::API_NAME, ['code' => 422, 'status' => 422, 'message' => 'Invalid Input. Please check password length!'], 422);
         }
 
         $rules = [
@@ -111,7 +112,8 @@ class ProfileController extends Controller
             foreach ($validator->getMessageBag()->toArray() as $msg) {
                 $messages[] = $msg[0];
             }
-            return $this->validationErrorResponse(self::API_NAME, $messages);
+            // Legacy contract: validator errors were HTTP 200 {status: 200, message: [...]}.
+            return $this->legacyResponse(self::API_NAME, ['status' => 200, 'message' => $messages], 200);
         }
 
         $result = $this->userService->updatePassword(
@@ -125,13 +127,17 @@ class ProfileController extends Controller
             if ($result['code'] === 401) {
                 return $this->unauthorizedResponse(self::API_NAME, $result['message']);
             }
+            // Legacy contract: a wrong current password was HTTP 500 with this exact message.
+            if ($result['message'] === 'Current password is incorrect') {
+                return $this->legacyResponse(self::API_NAME, ['code' => 500, 'message' => 'Sorry, you may type the wrong password.'], 500);
+            }
             if ($result['code'] === 422) {
-                return $this->validationErrorResponse(self::API_NAME, [$result['message']]);
+                return $this->legacyResponse(self::API_NAME, ['code' => 422, 'status' => 422, 'message' => $result['message']], 422);
             }
             return $this->serverErrorResponse(self::API_NAME, $result['message']);
         }
 
-        return $this->successResponse(self::API_NAME, null, $result['message']);
+        return $this->successResponse(self::API_NAME, null, 'Ok. Update password successfull');
     }
 
     public function userCourseUpdate(Request $request)
@@ -148,7 +154,8 @@ class ProfileController extends Controller
             foreach ($validator->getMessageBag()->toArray() as $msg) {
                 $messages[] = $msg[0];
             }
-            return $this->validationErrorResponse(self::API_NAME, $messages);
+            // Legacy contract: validator errors were HTTP 200 {status: 200, message: [...]}.
+            return $this->legacyResponse(self::API_NAME, ['status' => 200, 'message' => $messages], 200);
         }
 
         $result = $this->userService->updateCourseStatus(
@@ -164,7 +171,7 @@ class ProfileController extends Controller
             return $this->serverErrorResponse(self::API_NAME, $result['message']);
         }
 
-        return $this->successResponse(self::API_NAME, null, $result['message']);
+        return $this->successResponse(self::API_NAME, null, 'Ok. Update course successfull');
     }
 
     public function generateForgotMail(Request $request)

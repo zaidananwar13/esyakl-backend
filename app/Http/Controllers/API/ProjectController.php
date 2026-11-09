@@ -59,7 +59,8 @@ class ProjectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return $this->validationErrorResponse('Project API', $validator->errors()->all());
+            // Legacy contract: validator errors were HTTP 401 {status: 401, message: [...]}.
+            return $this->legacyResponse('Project', ['status' => 401, 'message' => $validator->errors()->all()], 401);
         }
 
         $result = $this->projectService->submitProject(
@@ -70,7 +71,7 @@ class ProjectController extends Controller
         );
 
         if (!$result['success']) {
-            return $this->errorResponse('Project API', $result['code'], $result['message']);
+            return $this->errorResponse('Project', $result['message'], $result['code']);
         }
 
         return $this->successResponse('Project API', null, $result['message']);

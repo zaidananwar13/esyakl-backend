@@ -133,7 +133,8 @@ class DiscussionController extends Controller
 
         // Validate input
         $validator = Validator::make($request->all(), [
-            'commented' => 'required|string|in:class_discussion,comment',
+            // Values the frontend sends in production (see comment.commented in the DB).
+            'commented' => 'required|string|in:class_discussion,comment,project_student,blog',
             'post_id' => 'required|integer',
             'content' => 'required|string|max:5000',
         ]);
@@ -171,9 +172,11 @@ class DiscussionController extends Controller
 
         // Validate input
         $validator = Validator::make($request->all(), [
-            'postType' => 'required|string|in:class_discussion,comment',
+            // Values the frontend sends in production (see like_dislike in the DB);
+            // 'neutral' is how the frontend removes a like/dislike.
+            'postType' => 'required|string|in:class_discussion,comment,blog',
             'post_id' => 'required|integer',
-            'status' => 'required|string|in:like,dislike',
+            'status' => 'required|string|in:like,dislike,neutral',
         ]);
 
         if ($validator->fails()) {

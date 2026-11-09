@@ -84,12 +84,15 @@ class CheckApiToken
     /**
      * Return unauthorized response
      */
-    private function unauthorizedResponse(string $message): \Illuminate\Http\JsonResponse
+    private function unauthorizedResponse(string $reason): \Illuminate\Http\JsonResponse
     {
+        // Legacy contract: the frontend expects this exact message for every token failure.
+        // The specific reason goes to the 'reason' field instead.
         return response()->json([
             'title' => config('app-settings.api.title_prefix', 'E - Syakl') . ' | Auth API',
             'code' => 401,
-            'message' => $message,
+            'message' => 'Invalid Token! Access Prohibited',
+            'reason' => $reason,
         ], 401);
     }
 }

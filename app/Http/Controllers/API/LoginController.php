@@ -26,12 +26,17 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // Legacy contract: string message + status 422 (the frontend shows the message as-is).
         if ($request->input('email') === null || $request->input('password') === null) {
-            return $this->validationErrorResponse(self::API_NAME, ['Invalid Input']);
+            return $this->legacyResponse(self::API_NAME, ['code' => 422, 'status' => 422, 'message' => 'Invalid Input'], 422);
         }
 
         if (strlen($request->input('email')) < 7 || strlen($request->input('password')) < 8) {
-            return $this->validationErrorResponse(self::API_NAME, ['Invalid Input. Please check your email or password length!']);
+            return $this->legacyResponse(self::API_NAME, [
+                'code' => 422,
+                'status' => 422,
+                'message' => 'Invalid Input. Please check your email or password length!',
+            ], 422);
         }
 
         $result = $this->authService->login($request->input('email'), $request->input('password'));
@@ -49,7 +54,8 @@ class LoginController extends Controller
         Help::setCookie('ssid', Hash::make($user->name));
         Help::updateUserLog(true, $user->id_user);
 
-        return $this->successResponse(self::API_NAME, $result['data'], 'Login successful');
+        // api_token/name/email/img also at the top level: the current frontend reads them there.
+        return $this->legacySuccessResponse(self::API_NAME, $result['data'], 'Login successful');
     }
 
     public function regis()
@@ -68,9 +74,10 @@ class LoginController extends Controller
 
         if (!$result['success']) {
             if ($result['code'] === 422) {
-                return $this->validationErrorResponse(self::API_NAME, [$result['message']]);
+                return $this->legacyResponse(self::API_NAME, ['code' => 422, 'status' => 422, 'message' => $result['message']], 422);
             }
-            return $this->conflictResponse(self::API_NAME, $result['message']);
+            // Legacy contract: "email sudah ada" / "password ga sama" were HTTP 200 with code 200.
+            return $this->legacyResponse(self::API_NAME, ['code' => 200, 'message' => $result['message']], 200);
         }
 
         return $this->successResponse(self::API_NAME, null, $result['message']);
@@ -129,6 +136,19 @@ class LoginController extends Controller
         // auth()->attempt($user->toArray()) removed - see login() above.
         Help::setCookie('ssid', Hash::make($user->name));
 
+        $redirectUrl = $this->authService->getOAuthRedirectUrl();
+
+        // Legacy flow (default): the current frontend reads the credentials from the query
+        // string, exactly like the Laravel 8 version's auto-submitted GET form did.
+        if (config('app-settings.oauth.legacy_redirect', true)) {
+            return redirect()->away($redirectUrl . '?' . http_build_query([
+                'api_token' => $result['data']['api_token'],
+                'name' => $result['data']['name'],
+                'email' => $result['data']['email'],
+                'img' => $result['data']['img'],
+            ]));
+        }
+
         // SECURITY FIX: Use secure token exchange instead of passing credentials in URL
         // Generate a short-lived exchange code
         $exchangeCode = \Illuminate\Support\Str::random(64);
@@ -142,8 +162,6 @@ class LoginController extends Controller
             ],
             now()->addMinutes(5)
         );
-
-        $redirectUrl = $this->authService->getOAuthRedirectUrl();
 
         // Only pass the exchange code in URL, not sensitive data
         return redirect()->away($redirectUrl . '?code=' . $exchangeCode);

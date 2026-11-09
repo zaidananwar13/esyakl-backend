@@ -68,10 +68,11 @@ class EventController extends Controller
         $history = $this->eventService->getUserEventHistory($user->id_user);
 
         if (count($history) > 0) {
-            return $this->successResponse(self::API_NAME, $history, 'Found');
+            return $this->successResponse(self::API_NAME, $history, 'Found.');
         }
 
-        return $this->successResponse(self::API_NAME, [], 'No event history found');
+        // Legacy contract: an empty history is data: {msg: ...}, not an empty list.
+        return $this->successResponse(self::API_NAME, ['msg' => 'Event history not Found.'], 'Event history not Found.');
     }
 
     public function attend(Request $request)

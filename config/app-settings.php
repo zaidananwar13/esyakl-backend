@@ -20,6 +20,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Google OAuth redirect mode
+    |--------------------------------------------------------------------------
+    | true  (default): legacy flow the current frontend understands. The callback
+    |       redirects to /student/my-class?api_token=...&name=...&email=...&img=...
+    | false: secure flow. Redirects with ?code=<one-time code>; the frontend must
+    |       exchange it via POST /auth/exchange. Switch only after the frontend
+    |       supports it.
+    */
+    'oauth' => [
+        'legacy_redirect' => (bool) env('OAUTH_LEGACY_REDIRECT', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Password Settings
     |--------------------------------------------------------------------------
     */

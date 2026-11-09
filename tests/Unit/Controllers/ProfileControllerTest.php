@@ -69,7 +69,12 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userProfileUpdate($request);
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // Legacy contract: validator errors are HTTP 200 {status: 200, message: [...]}.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['status']);
+        $this->assertIsArray($body['message']);
+        $this->assertNotEmpty($body['message']);
     }
 
     #[Test]
@@ -82,7 +87,12 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userProfileUpdate($request);
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // Legacy contract: validator errors are HTTP 200 {status: 200, message: [...]}.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['status']);
+        $this->assertIsArray($body['message']);
+        $this->assertNotEmpty($body['message']);
     }
 
     #[Test]
@@ -95,7 +105,12 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userProfileUpdate($request);
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // Legacy contract: validator errors are HTTP 200 {status: 200, message: [...]}.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['status']);
+        $this->assertIsArray($body['message']);
+        $this->assertNotEmpty($body['message']);
     }
 
     #[Test]
@@ -108,7 +123,10 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userPasswordUpdate($request);
 
+        // Legacy contract: HTTP 422 with a string message.
         $this->assertEquals(422, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame('Invalid Input. Please check password length!', $body['message']);
     }
 
     #[Test]
@@ -120,7 +138,12 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userCourseUpdate($request);
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // Legacy contract: validator errors are HTTP 200 {status: 200, message: [...]}.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['status']);
+        $this->assertIsArray($body['message']);
+        $this->assertNotEmpty($body['message']);
     }
 
     #[Test]
@@ -132,7 +155,11 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->controller->userCourseUpdate($request);
 
-        $this->assertEquals(422, $response->getStatusCode());
+        // Legacy contract: validator errors are HTTP 200 {status: 200, message: [...]}.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['status']);
+        $this->assertIsArray($body['message']);
     }
 
     #[Test]

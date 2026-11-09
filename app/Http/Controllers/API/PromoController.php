@@ -33,17 +33,25 @@ class PromoController extends Controller
 
         $code = $request->input('code');
 
+        // Legacy contract (the checkout page reads 'msg', 'code', 'type' and 'value'):
+        //   invalid/missing code -> HTTP 401 {code: 401, msg: "Promo Coupon Invalid"}
+        //   expired              -> HTTP 200 {code: 419, msg: "Promo Coupon Expired"}
+        //   valid                -> HTTP 200 {type, value} at the top level
         if (!$code || !is_string($code)) {
-            return $this->validationErrorResponse(self::API_NAME, ['Promo code is required']);
+            return $this->legacyResponse(self::API_NAME, ['code' => 401, 'msg' => 'Promo Coupon Invalid', 'message' => 'Promo Coupon Invalid'], 401);
         }
 
         $result = $this->promoService->validatePromoCode($code);
 
         if (!$result['success']) {
-            return $this->errorResponse(self::API_NAME, $result['message'], $result['code']);
+            if ($result['code'] === 410) {
+                return $this->legacyResponse(self::API_NAME, ['code' => 419, 'msg' => 'Promo Coupon Expired', 'message' => 'Promo Coupon Expired'], 200);
+            }
+
+            return $this->legacyResponse(self::API_NAME, ['code' => 401, 'msg' => 'Promo Coupon Invalid', 'message' => 'Promo Coupon Invalid'], 401);
         }
 
-        return $this->successResponse(self::API_NAME, [
+        return $this->legacySuccessResponse(self::API_NAME, [
             'type' => $result['type'],
             'value' => $result['value']
         ], 'Promo code validated');

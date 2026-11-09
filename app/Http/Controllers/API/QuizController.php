@@ -65,7 +65,8 @@ class QuizController extends Controller
             return $this->serverErrorResponse(self::API_NAME, $result['message']);
         }
 
-        return $this->successResponse(self::API_NAME, [
+        // Legacy contract: correct/question/grade/status at the top level (also under 'data').
+        return $this->legacySuccessResponse(self::API_NAME, [
             'correct' => $result['correct'],
             'question' => $result['question'],
             'grade' => $result['grade'],

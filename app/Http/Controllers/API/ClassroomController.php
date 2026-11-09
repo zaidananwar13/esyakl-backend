@@ -53,10 +53,11 @@ class ClassroomController extends Controller
 
         // Handle expired case
         if (isset($data['expired']) && $data['expired'] === true) {
-            return $this->errorResponse(self::API_NAME, 'expired', 200, [
+            // Legacy contract: {status: "expired", id_class} at the top level, HTTP 200.
+            return $this->legacySuccessResponse(self::API_NAME, [
                 'status' => $data['status'],
-                'id_class' => $data['id_class']
-            ]);
+                'id_class' => $data['id_class'],
+            ], 'expired');
         }
 
         // Handle class not found

@@ -111,7 +111,15 @@ class ClassroomService
 
             $rating = round(LectureRating::where('id_lecture', $teacher->id_class_lecture)->avg('rating'), 1);
 
+            // Keep the class_lecture fields the Laravel 8 API returned (minus id_user):
+            // the frontend rates a teacher with post_id = id_class_lecture.
             $result[] = [
+                'id_class_lecture' => $teacher->id_class_lecture,
+                'id_class' => $teacher->id_class,
+                'type' => $teacher->type,
+                'status' => $teacher->status,
+                'created_at' => $teacher->getRawOriginal('created_at'),
+                'updated_at' => $teacher->getRawOriginal('updated_at'),
                 'id_teacher' => $teacher->id_user,
                 'nama' => $userData->nama,
                 'foto' => $userData->foto,

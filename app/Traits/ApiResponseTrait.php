@@ -56,6 +56,36 @@ trait ApiResponseTrait
         return $this->errorResponse($apiName, $message, 409);
     }
 
+    /**
+     * Backward-compatible success response.
+     *
+     * The payload stays under 'data' (new contract) AND its fields are copied to the
+     * top level, which is where the Laravel 8 API put them and where the current
+     * frontend reads them. Payload keys win over the envelope keys (e.g. a class 'title').
+     */
+    protected function legacySuccessResponse(string $apiName, array $data, string $message = 'Retrieving data successful!', int $code = 200)
+    {
+        $envelope = [
+            'title' => config('app-settings.api.title_prefix', 'E - Syakl') . " | $apiName API",
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+
+        return response(array_merge($envelope, $data), $code);
+    }
+
+    /**
+     * Legacy body with an explicit HTTP status, for endpoints whose Laravel 8 version
+     * answered with a status the frontend depends on (e.g. errors sent as HTTP 200).
+     */
+    protected function legacyResponse(string $apiName, array $body, int $httpStatus)
+    {
+        $title = ['title' => config('app-settings.api.title_prefix', 'E - Syakl') . " | $apiName API"];
+
+        return response($title + $body, $httpStatus);
+    }
+
     protected function validationErrorResponse(string $apiName, array $messages)
     {
         $response = [
