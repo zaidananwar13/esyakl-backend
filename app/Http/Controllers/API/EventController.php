@@ -36,7 +36,12 @@ class EventController extends Controller
                 return $this->successResponse(self::API_NAME, $events, 'Success!');
             }
 
-            return $this->notFoundResponse(self::API_NAME, 'No events found');
+            // Same as the old API: HTTP 200 without a data key when there are no events.
+            return response([
+                'title' => config('app-settings.api.title_prefix', 'E - Syakl') . ' | ' . self::API_NAME . ' API',
+                'code' => 200,
+                'message' => 'Not Found, You have nothing achieved yet.',
+            ], 200);
         }
 
         if (!is_numeric($id) || $id <= 0) {
@@ -108,6 +113,12 @@ class EventController extends Controller
             return $this->successResponse(self::API_NAME, $events, 'Success!');
         }
 
-        return $this->notFoundResponse(self::API_NAME, 'No events found');
+        // Same as the old API: HTTP 200 with code 404 in the body and an empty data list.
+        return response([
+            'title' => config('app-settings.api.title_prefix', 'E - Syakl') . ' | ' . self::API_NAME . ' API',
+            'code' => 404,
+            'message' => 'No Event Found.',
+            'data' => [],
+        ], 200);
     }
 }

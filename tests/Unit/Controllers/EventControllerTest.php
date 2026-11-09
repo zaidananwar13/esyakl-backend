@@ -48,6 +48,24 @@ class EventControllerTest extends TestCase
 
         $response = $controller->eventToday($request);
 
-        $this->assertEquals(404, $response->getStatusCode());
+        // Legacy contract the frontend relies on: HTTP 200, code 404 in the body, empty data.
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(404, $body['code']);
+        $this->assertSame([], $body['data']);
+    }
+
+    public function test_index_without_events_returns_legacy_200_without_data()
+    {
+        $mockService = Mockery::mock(EventService::class);
+        $mockService->shouldReceive('getActiveEvents')->once()->andReturn([]);
+
+        $controller = new EventController($mockService);
+        $response = $controller->index(new Request());
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $body = json_decode($response->getContent(), true);
+        $this->assertSame(200, $body['code']);
+        $this->assertArrayNotHasKey('data', $body);
     }
 }

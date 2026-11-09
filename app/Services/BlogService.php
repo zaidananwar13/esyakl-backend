@@ -85,8 +85,13 @@ class BlogService
                 ->exists();
         }
 
+        // Keep every field the old (Laravel 8) API returned: the frontend may rely on
+        // id_bahasa (language filter), status and owner.
         return [
             'id_blog' => $blog->id_blog,
+            'id_bahasa' => $blog->id_bahasa,
+            'owner' => $blog->owner,
+            'status' => $blog->status,
             'title' => $blog->title,
             'content' => $blog->content,
             'category' => $blog->category,
