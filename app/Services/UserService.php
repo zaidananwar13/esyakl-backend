@@ -200,7 +200,12 @@ class UserService
                     ->first();
 
                 if ($histories !== null) {
-                    $syls = Syllabus::select("order_number")->where('id_class', $histories->id_class)->orderBy('order_number', 'DESC')->first();
+                    $syls = Syllabus::select("order_number")
+                        ->where('id_class', $histories->id_class)
+                        ->whereNotNull('title')
+                        ->where('title', '!=', '')
+                        ->orderBy('order_number', 'DESC')
+                        ->first();
                     $mySyls = Syllabus::select("order_number")->where('id_syllabus', $histories->id_syllabus)->first();
 
                     if ($syls && $mySyls) {

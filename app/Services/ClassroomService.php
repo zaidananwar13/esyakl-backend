@@ -174,6 +174,8 @@ class ClassroomService
     {
         $lastSyllabus = Syllabus::select('id_syllabus', 'order_number')
             ->where('id_class', $classStudent->id_class)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->orderBy('order_number', 'DESC')
             ->first();
 
@@ -258,6 +260,8 @@ class ClassroomService
     {
         $syllabi = Syllabus::select('id_syllabus', 'title', 'content')
             ->where('id_class', $classStudent->id_class)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->orderBy('order_number', 'ASC')
             ->get();
 

@@ -83,6 +83,8 @@ class AuthorizerService
         $syllabusStudent = SyllabusStudent::where('id_class_student', $classStudent->id_class_student)->first();
         $syllabus = Syllabus::where('order_number', $material)
             ->where('id_class', $classId)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->first();
 
         if (!$syllabusStudent || !$syllabus) {

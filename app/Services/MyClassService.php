@@ -120,6 +120,8 @@ class MyClassService
             if ($history) {
                 $lastSyllabus = Syllabus::select('order_number')
                     ->where('id_class', $history->id_class)
+                    ->whereNotNull('title')
+                    ->where('title', '!=', '')
                     ->orderBy('order_number', 'DESC')
                     ->first();
 

@@ -92,7 +92,10 @@ class ClassService
 
         foreach ($classes as $kelas) {
             $data = $kelas->toArray();
-            $data['langkah'] = Syllabus::where('id_class', $data['id_kelas'])->count();
+            $data['langkah'] = Syllabus::where('id_class', $data['id_kelas'])
+                ->whereNotNull('title')
+                ->where('title', '!=', '')
+                ->count();
 
             $kategori = Kategori::select('level as judul')
                 ->where('id_class_level', $data['level'])
@@ -180,6 +183,8 @@ class ClassService
 
         $firstSyllabus = Syllabus::select('id_syllabus')
             ->where('id_class', $classId)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->orderBy('order_number', 'asc')
             ->first();
 
@@ -275,6 +280,8 @@ class ClassService
         return DB::table('syllabus')
             ->select('id_syllabus', 'title as judul')
             ->where('id_class', $classId)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->orderBy('order_number', 'asc')
             ->get();
     }

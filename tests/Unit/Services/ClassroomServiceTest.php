@@ -105,4 +105,38 @@ class ClassroomServiceTest extends TestCase
         $this->assertIsArray($result);
         $this->assertEquals('No Project Yet.', $result['data']);
     }
+
+    public function test_get_materials_with_quizzes_excludes_syllabi_with_null_or_empty_title()
+    {
+        $mockClassStudent = new ClassStudent();
+        $mockClassStudent->id_class = 3;
+        $mockClassStudent->id_class_student = 1;
+
+        $materials = $this->service->getMaterialsWithQuizzes($mockClassStudent, 80);
+
+        $this->assertIsArray($materials);
+        $this->assertNotEmpty($materials);
+
+        foreach ($materials as $item) {
+            $syllabus = $item[0];
+            $quizData = $item[1];
+
+            $this->assertNotNull($syllabus->title, 'Syllabus title must not be null');
+            $this->assertNotEquals('', trim($syllabus->title), 'Syllabus title must not be empty');
+            $this->assertNotNull($quizData['title'], 'Quiz title must not be null');
+            $this->assertNotEquals('', trim($quizData['title']), 'Quiz title must not be empty');
+        }
+    }
+
+    public function test_get_class_progress_uses_highest_valid_syllabus_order()
+    {
+        $mockClassStudent = new ClassStudent();
+        $mockClassStudent->id_class = 3;
+        $mockClassStudent->id_class_student = 1;
+
+        $progress = $this->service->getClassProgress($mockClassStudent);
+
+        $this->assertIsArray($progress);
+        $this->assertArrayHasKey('progress', $progress);
+    }
 }

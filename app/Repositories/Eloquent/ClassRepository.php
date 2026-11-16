@@ -75,6 +75,8 @@ class ClassRepository implements ClassRepositoryInterface
     public function getSyllabus(int $classId): Collection
     {
         return Syllabus::where('id_class', $classId)
+            ->whereNotNull('title')
+            ->where('title', '!=', '')
             ->orderBy('order_number', 'asc')
             ->get(['id_syllabus', 'title as judul']);
     }
