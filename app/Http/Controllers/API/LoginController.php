@@ -81,7 +81,8 @@ class LoginController extends Controller
             return $this->legacyResponse(self::API_NAME, ['code' => 200, 'message' => $result['message']], 200);
         }
 
-        return $this->successResponse(self::API_NAME, null, $result['message']);
+        // Legacy contract: frontend expects plain text response `response.data == "check your email :)"`
+        return response($result['message'], 200)->header('Content-Type', 'text/plain');
     }
 
     public function verifyEmail(Request $request, $token)

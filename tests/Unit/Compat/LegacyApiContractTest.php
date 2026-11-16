@@ -111,6 +111,27 @@ class LegacyApiContractTest extends TestCase
     }
 
     #[Test]
+    public function register_success_returns_plain_text_for_frontend_contract()
+    {
+        $auth = Mockery::mock(AuthService::class);
+        $auth->shouldReceive('register')->once()->andReturn([
+            'success' => true,
+            'code' => 200,
+            'message' => 'check your email :)',
+        ]);
+
+        $response = (new LoginController($auth))->registerEmail(Request::create('/register', 'POST', [
+            'name' => 'Legacy Tester',
+            'email' => 'legacy@example.com',
+            'password' => 'secret123!',
+            'repassword' => 'secret123!',
+        ]));
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('check your email :)', $response->getContent());
+    }
+
+    #[Test]
     public function google_callback_legacy_mode_redirects_with_credentials_in_query()
     {
         config(['app-settings.oauth.legacy_redirect' => true, 'app-settings.frontend_url' => 'https://arabic-go.com']);

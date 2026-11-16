@@ -90,7 +90,7 @@ class RouteServiceProvider extends ServiceProvider
 
         // Rate limiting for registration
         RateLimiter::for('registration', function (Request $request) {
-            return Limit::perMinute(3)->by($request->ip())->response(function () {
+            return Limit::perMinute(10)->by($request->ip())->response(function () {
                 return response()->json([
                     'title' => config('app-settings.api.title_prefix', 'E - Syakl') . ' | Auth API',
                     'code' => 429,

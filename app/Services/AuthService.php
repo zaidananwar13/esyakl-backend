@@ -7,6 +7,7 @@ use App\Mail\VerificationMail;
 use App\Models\EmailVerification;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -141,11 +142,20 @@ class AuthService
             'expired_at' => DateHelper::nowTimestamp() + ($expiryMinutes * 60),
         ]);
 
-        Mail::to($user->email)->send(new VerificationMail([
-            'mailed' => $user->name,
-            'content' => "Please click the link below before $expiryMinutes minutes passed",
-            'link' => URL::to('/web/mail-verify/' . $token),
-        ]));
+        try {
+            $fromAddress = config('mail.from.address') ?: 'noreply@arabic-go.com';
+            $fromName = config('mail.from.name') ?: config('app.name', 'E-Syakl');
+
+            $mailable = (new VerificationMail([
+                'mailed' => $user->name,
+                'content' => "Please click the link below before $expiryMinutes minutes passed",
+                'link' => URL::to('/web/mail-verify/' . $token),
+            ]))->from($fromAddress, $fromName);
+
+            Mail::to($user->email)->send($mailable);
+        } catch (\Throwable $e) {
+            Log::warning('Registration verification email failed to send: ' . $e->getMessage());
+        }
     }
 
     public function resendVerificationEmail(User $user): void
