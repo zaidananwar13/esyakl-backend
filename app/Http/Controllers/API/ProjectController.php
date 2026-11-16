@@ -50,17 +50,50 @@ class ProjectController extends Controller
 
     public function submit(Request $request)
     {
+        $allowedExtensions = ['zip', 'rar', 'pdf', 'docx', 'doc', 'txt'];
+        $allowedMimes = [
+            'application/zip',
+            'application/x-zip-compressed',
+            'application/x-rar-compressed',
+            'application/vnd.rar',
+            'application/x-rar',
+            'application/rar',
+            'application/pdf',
+            'application/x-pdf',
+            'application/acrobat',
+            'applications/vnd.pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/msword',
+            'text/plain',
+        ];
+
         $input = $request->all();
         $validator = Validator::make($input, [
             'note' => 'required',
             'api_token' => 'required',
             'project' => 'required',
-            'project_file' => 'required|mimes:zip,rar,pdf,docx,txt|max:12048',
+            'project_file' => [
+                'required',
+                'file',
+                'max:12048',
+                function ($attribute, $value, $fail) use ($allowedExtensions, $allowedMimes) {
+                    if (!$value instanceof \Illuminate\Http\UploadedFile) {
+                        return;
+                    }
+                    $ext = strtolower($value->getClientOriginalExtension());
+                    $mime = $value->getMimeType();
+                    $clientMime = $value->getClientMimeType();
+                    $mimeValid = in_array($mime, $allowedMimes, true) || in_array($clientMime, $allowedMimes, true);
+                    if (!in_array($ext, $allowedExtensions, true) || !$mimeValid) {
+                        $fail('The ' . str_replace('_', ' ', $attribute) . ' must be a file of type: zip, rar, pdf, docx, txt.');
+                    }
+                },
+            ],
         ]);
 
         if ($validator->fails()) {
             // Legacy contract: validator errors were HTTP 401 {status: 401, message: [...]}.
-            return $this->legacyResponse('Project', ['status' => 401, 'message' => $validator->errors()->all()], 401);
+            return $this->legacyResponse(self::API_NAME, ['status' => 401, 'message' => $validator->errors()->all()], 401);
         }
 
         $result = $this->projectService->submitProject(
@@ -71,10 +104,16 @@ class ProjectController extends Controller
         );
 
         if (!$result['success']) {
-            return $this->errorResponse('Project', $result['message'], $result['code']);
+            return $this->legacyResponse(self::API_NAME, [
+                'status' => $result['code'],
+                'message' => $result['message'],
+            ], $result['code']);
         }
 
-        return $this->successResponse('Project API', null, $result['message']);
+        return $this->legacyResponse(self::API_NAME, [
+            'status' => 200,
+            'message' => $result['message'],
+        ], 200);
     }
 
     public function test()

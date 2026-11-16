@@ -4,13 +4,16 @@ namespace Tests\Unit\Compat;
 
 use App\Http\Controllers\API\KelasController;
 use App\Http\Controllers\API\LoginController;
+use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\PromoController;
 use App\Http\Middleware\CheckApiToken;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\ClassService;
+use App\Services\ProjectService;
 use App\Services\PromoService;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
@@ -207,5 +210,63 @@ class LegacyApiContractTest extends TestCase
 
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('Invalid Token! Access Prohibited', $this->body($response)['message']);
+    }
+
+    #[Test]
+    public function project_submit_success_contract_returns_http_200_with_status_200()
+    {
+        $projectService = Mockery::mock(ProjectService::class);
+        $projectService->shouldReceive('submitProject')
+            ->once()
+            ->andReturn([
+                'success' => true,
+                'code' => 200,
+                'message' => 'Upload Project Successful',
+            ]);
+
+        $file = UploadedFile::fake()->create('project.pdf', 50, 'application/pdf');
+        $response = (new ProjectController($projectService))->submit(
+            Request::create(
+                '/project/submit',
+                'POST',
+                ['api_token' => $this->token, 'project' => 6, 'note' => 'My submission'],
+                [],
+                ['project_file' => $file]
+            )
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $body = $this->body($response);
+        $this->assertSame(200, $body['status']);
+        $this->assertSame('Upload Project Successful', $body['message']);
+    }
+
+    #[Test]
+    public function project_submit_failure_contract_returns_http_and_body_matching_error_code()
+    {
+        $projectService = Mockery::mock(ProjectService::class);
+        $projectService->shouldReceive('submitProject')
+            ->once()
+            ->andReturn([
+                'success' => false,
+                'code' => 404,
+                'message' => 'Class enrollment not found or expired',
+            ]);
+
+        $file = UploadedFile::fake()->create('project.pdf', 50, 'application/pdf');
+        $response = (new ProjectController($projectService))->submit(
+            Request::create(
+                '/project/submit',
+                'POST',
+                ['api_token' => $this->token, 'project' => 999, 'note' => 'My submission'],
+                [],
+                ['project_file' => $file]
+            )
+        );
+
+        $this->assertSame(404, $response->getStatusCode());
+        $body = $this->body($response);
+        $this->assertSame(404, $body['status']);
+        $this->assertSame('Class enrollment not found or expired', $body['message']);
     }
 }

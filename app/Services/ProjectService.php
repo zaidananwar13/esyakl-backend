@@ -82,7 +82,7 @@ class ProjectService
         ];
     }
 
-    public function submitProject(string $token, int $projectClassId, string $note, $file): array
+    public function submitProject(string $token, int|string $projectIdOrClassId, string $note, $file): array
     {
         $user = User::where("api_token", $token)->first();
 
@@ -94,7 +94,6 @@ class ProjectService
             ];
         }
 
-        $filename = "";
         if ($file) {
             $validation = $this->validateProjectFile($file);
             if (!$validation['valid']) {
@@ -104,18 +103,64 @@ class ProjectService
                     'message' => $validation['message']
                 ];
             }
-
-            $extension = strtolower($file->getClientOriginalExtension());
-            $filename = \Illuminate\Support\Str::uuid() . '.' . $extension;
-            
-            $file->storeAs('', $filename, 'project');
         }
 
-        $classStudent = ClassStudent::select('id_class_student')
-            ->where('id_user', $user->id_user)
-            ->where('id_class', $projectClassId)
-            ->where('expired_at', '>=', Carbon::now()->format('U'))
-            ->first();
+        $projectParam = (int) $projectIdOrClassId;
+
+        // Flexible lookup: either id_project or id_class
+        $projectByProjectId = Project::where('id_project', $projectParam)->first();
+        $projectByClassId = Project::where('id_class', $projectParam)->first();
+
+        $getEnrollment = function (int $classId) use ($user) {
+            return ClassStudent::select('id_class_student', 'id_class')
+                ->where('id_user', $user->id_user)
+                ->where('id_class', $classId)
+                ->where(function ($query) {
+                    $query->where('expired_at', '>=', Carbon::now()->format('U'))
+                          ->orWhere(function ($q) {
+                              $q->whereNotNull('completed_at')
+                                ->where('completed_at', '>', 0);
+                          });
+                })
+                ->first();
+        };
+
+        $projectModel = null;
+        $classStudent = null;
+
+        if ($projectByProjectId && $projectByClassId) {
+            $enrollmentForProj = $getEnrollment((int) $projectByProjectId->id_class);
+            $enrollmentForClass = $getEnrollment((int) $projectByClassId->id_class);
+
+            if ($enrollmentForProj && !$enrollmentForClass) {
+                // User only enrolled in the class associated with $projectByProjectId
+                $projectModel = $projectByProjectId;
+                $classStudent = $enrollmentForProj;
+            } elseif ($enrollmentForClass && !$enrollmentForProj) {
+                // User only enrolled in the class matching $projectByClassId
+                $projectModel = $projectByClassId;
+                $classStudent = $enrollmentForClass;
+            } else {
+                // Enrolled in both (or neither): prefer id_class to maintain backwards
+                // compatibility with legacy frontend clients that submit class ID as 'project'.
+                $projectModel = $projectByClassId ?: $projectByProjectId;
+                $classStudent = $enrollmentForClass ?: $enrollmentForProj;
+            }
+        } elseif ($projectByProjectId) {
+            $projectModel = $projectByProjectId;
+            $classStudent = $getEnrollment((int) $projectModel->id_class);
+        } elseif ($projectByClassId) {
+            $projectModel = $projectByClassId;
+            $classStudent = $getEnrollment((int) $projectModel->id_class);
+        }
+
+        if ($projectModel === null) {
+            return [
+                'success' => false,
+                'code' => 404,
+                'message' => 'Project not found'
+            ];
+        }
 
         if ($classStudent === null) {
             return [
@@ -125,14 +170,11 @@ class ProjectService
             ];
         }
 
-        $projectModel = Project::where('id_class', $projectClassId)->first();
-
-        if ($projectModel === null) {
-            return [
-                'success' => false,
-                'code' => 404,
-                'message' => 'Project not found'
-            ];
+        $filename = "";
+        if ($file) {
+            $extension = strtolower($file->getClientOriginalExtension());
+            $filename = \Illuminate\Support\Str::uuid() . '.' . $extension;
+            $file->storeAs('', $filename, 'project');
         }
 
         $project = ProjectUser::select("id_project_student")
@@ -161,7 +203,7 @@ class ProjectService
         $projectResult->file = $filename;
         $projectResult->save();
 
-        Helper::recordUserActivity($user->id_user, 'Submit Project', $projectClassId);
+        Helper::recordUserActivity($user->id_user, 'Submit Project', $projectModel->id_class);
 
         return [
             'success' => true,
@@ -177,7 +219,12 @@ class ProjectService
             'application/x-zip-compressed',
             'application/x-rar-compressed',
             'application/vnd.rar',
+            'application/x-rar',
+            'application/rar',
             'application/pdf',
+            'application/x-pdf',
+            'application/acrobat',
+            'applications/vnd.pdf',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'application/msword',
             'text/plain',
@@ -196,7 +243,8 @@ class ProjectService
 
         // Check MIME type
         $mimeType = $file->getMimeType();
-        if (!in_array($mimeType, $allowedMimes, true)) {
+        $clientMime = method_exists($file, 'getClientMimeType') ? $file->getClientMimeType() : null;
+        if (!in_array($mimeType, $allowedMimes, true) && !in_array($clientMime, $allowedMimes, true)) {
             return [
                 'valid' => false,
                 'message' => 'Invalid file type. Allowed: ZIP, RAR, PDF, DOCX, TXT'
