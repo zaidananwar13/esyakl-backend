@@ -5,6 +5,7 @@ use App\Http\Controllers\API\CertificateController;
 use App\Http\Controllers\API\DiscussionController;
 use App\Http\Controllers\API\EventController;
 use App\Http\Controllers\API\FEAuthController;
+use App\Http\Controllers\API\HarakatController;
 use App\Http\Controllers\API\KategoriController;
 use App\Http\Controllers\API\KelasController;
 use App\Http\Controllers\API\LearningPathController;
@@ -43,6 +44,11 @@ use Illuminate\Support\Facades\Route;
 
 // Route::middleware('auth:api')->get('/user', [UserController::class, 'index']);
 // Route::get('/user', [UserController::class, 'index']);
+
+// Harakat Vocalization & I'rab AI
+Route::post('harakat/vocalize', [HarakatController::class, 'vocalize'])->middleware('throttle:harakat');
+Route::post('api/harakat/vocalize', [HarakatController::class, 'vocalize'])->middleware('throttle:harakat');
+Route::match(['get', 'post'], 'api/get/all/{text?}', [HarakatController::class, 'vocalizeLegacy'])->middleware('throttle:harakat');
 
 Route::get('overview-{id}', [OverviewController::class, 'index']);
 

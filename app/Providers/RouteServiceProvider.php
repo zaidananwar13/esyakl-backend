@@ -99,6 +99,20 @@ class RouteServiceProvider extends ServiceProvider
             });
         });
 
+        // Rate limiting for harakat vocalization AI requests
+        RateLimiter::for('harakat', function (Request $request) {
+            return Limit::perMinute(20)->by($request->ip())->response(function () {
+                return response()->json([
+                    'title' => config('app-settings.api.title_prefix', 'E - Syakl') . ' | Harakat API',
+                    'code' => 429,
+                    'status' => 429,
+                    'message' => 'Terlalu banyak permintaan harakat. Silakan coba lagi beberapa saat lagi.',
+                    'text' => '',
+                    'aroef' => []
+                ], 429);
+            });
+        });
+
         // Rate limiting for password reset
         RateLimiter::for('password-reset', function (Request $request) {
             return Limit::perMinute(3)->by($request->ip())->response(function () {
