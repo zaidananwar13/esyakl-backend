@@ -114,11 +114,16 @@ class AuthService
         $user->api_token = $this->generateApiToken();
         $user->avatar_original = 'user.png';
         $user->password = bcrypt($data['password']);
+        $user->email_verified_at = $now;
         $user->created_at = $now;
         $user->updated_at = $now;
         $user->save();
 
-        $this->sendVerificationEmail($user);
+        try {
+            $this->sendVerificationEmail($user);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Registration verification email failed to send: ' . $e->getMessage());
+        }
 
         return [
             'success' => true,

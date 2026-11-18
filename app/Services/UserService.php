@@ -62,6 +62,7 @@ class UserService
         $user->google_id = "default";
         $user->password = bcrypt($password);
         $user->api_token = hash('sha256', Str::random(60));
+        $user->email_verified_at = time();
         $user->save();
 
         return [

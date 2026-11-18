@@ -72,3 +72,38 @@
 2. User baru bisa langsung login di web tanpa muncul error *"Akun belum diverifikasi"*.
 3. Build Sapper sukses tanpa error.
 4. Ukuran transfer file JS saat dicek via Network tab berkurang drastis berkat Gzip.
+
+---
+
+## 📌 Perintah Update untuk 86 Pengguna Lama (Disimpan untuk Nanti)
+Status saat ini 86 pengguna lama dibiarkan seperti sedia kala sesuai permintaan pengguna. Jika di kemudian hari ingin mengaktifkan seluruh 86 akun lama tersebut sekaligus, jalankan salah satu perintah berikut:
+
+### Opsi 1: Melalui SQL Direct (PostgreSQL / DBeaver / psql)
+```sql
+UPDATE "user" 
+SET email_verified_at = created_at 
+WHERE email_verified_at IS NULL;
+```
+
+### Opsi 2: Melalui Terminal Laravel Artisan Tinker
+```bash
+php artisan tinker --execute="DB::table('user')->whereNull('email_verified_at')->update(['email_verified_at' => DB::raw('created_at')]);"
+```
+
+---
+
+## 🏁 Status Implementasi
+- **Status**: 🟢 **Selesai Diimplementasikan & Diverifikasi di Lokal**
+- **Perubahan Backend**:
+  - `app/Services/AuthService.php`: Auto-verify pendaftaran baru (`$user->email_verified_at = $now`) & try-catch `sendVerificationEmail`.
+  - `app/Services/UserService.php`: Auto-verify pendaftaran baru (`$user->email_verified_at = time()`).
+- **Perubahan Frontend**:
+  - `src/components/Sign-up-content.svelte`: Notifikasi sukses pendaftaran disesuaikan mengarahkan user langsung login.
+  - `src/components/Class-info.svelte`: `loading="lazy"` & `decoding="async"` pada thumbnail dan avatar review.
+  - `src/components/Blog-list.svelte`: `loading="lazy"` & `decoding="async"` pada gambar blog.
+  - `src/components/Event-list.svelte`: `loading="lazy"` & `decoding="async"` pada poster event.
+  - `src/components/Classroom-content.svelte`: `loading="lazy"` & `decoding="async"` pada foto instruktur/guru.
+  - `src/components/Classes-list.svelte`: `loading="lazy"` & `decoding="async"` pada katalog grid kelas.
+- **Hasil Pengujian**:
+  - Test suite: 757 passed (1571 assertions).
+  - Pendaftaran user baru: Berhasil langsung login dengan kode 200 tanpa verifikasi email manual.
