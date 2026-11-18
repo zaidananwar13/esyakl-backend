@@ -169,7 +169,7 @@ class UserServiceTest extends TestCase
         
         $this->assertFalse($result['success']);
         $this->assertEquals(422, $result['code']);
-        $this->assertStringContainsString('password length', $result['message']);
+        $this->assertStringContainsString('at least 8 characters', $result['message']);
     }
 
     #[Test]
@@ -216,13 +216,13 @@ class UserServiceTest extends TestCase
     {
         $service = new UserService();
         
-        // Exactly 5 characters should fail
-        $result5 = $service->updatePassword('token', '12345', '12345', null);
-        $this->assertFalse($result5['success']);
-        $this->assertEquals(422, $result5['code']);
+        // Exactly 7 characters should fail
+        $result7 = $service->updatePassword('token', 'Pass123', 'Pass123', null);
+        $this->assertFalse($result7['success']);
+        $this->assertEquals(422, $result7['code']);
         
-        // Exactly 6 characters should pass validation (might fail for other reasons)
-        $resultPass = $service->updatePassword('token', '123456', '123456', null);
+        // Exactly 8 characters with complexity should pass validation (might fail for other reasons like token)
+        $resultPass = $service->updatePassword('token', 'Pass1234', 'Pass1234', null);
         // Even if it fails due to invalid token, code should not be 422
         $this->assertNotEquals(422, $resultPass['code']);
     }

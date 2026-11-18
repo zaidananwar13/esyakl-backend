@@ -27,8 +27,8 @@ class PromoServiceTest extends TestCase
         $result = $this->service->validatePromoCode('INVALID_CODE');
 
         $this->assertFalse($result['success']);
-        $this->assertEquals(401, $result['code']);
-        $this->assertEquals('Promo Coupon Invalid', $result['message']);
+        $this->assertEquals(404, $result['code']);
+        $this->assertEquals('Promo code not found', $result['message']);
     }
 
     public function test_validate_promo_code_returns_array()
@@ -43,8 +43,8 @@ class PromoServiceTest extends TestCase
         $result = $this->service->getPromoDetails(null);
 
         $this->assertFalse($result['success']);
-        $this->assertEquals(401, $result['code']);
-        $this->assertEquals('Promo Coupon Invalid', $result['message']);
+        $this->assertEquals(400, $result['code']);
+        $this->assertEquals('Promo code is required', $result['message']);
     }
 
     public function test_get_promo_details_returns_error_when_not_found()
@@ -52,8 +52,8 @@ class PromoServiceTest extends TestCase
         $result = $this->service->getPromoDetails('INVALID_CODE');
 
         $this->assertFalse($result['success']);
-        $this->assertEquals(401, $result['code']);
-        $this->assertEquals('Promo Coupon Invalid', $result['message']);
+        $this->assertEquals(404, $result['code']);
+        $this->assertEquals('Promo code not found or expired', $result['message']);
     }
 
     public function test_get_promo_details_returns_array()

@@ -56,6 +56,9 @@ class QuizControllerTest extends TestCase
 
         $controller = new QuizController($mockService);
         $request = new Request();
+        $admin = new \App\Models\User();
+        $admin->type = 'admin';
+        $request->setUserResolver(fn () => $admin);
 
         $response = $controller->freekey($request, 1);
 
@@ -100,6 +103,9 @@ class QuizControllerTest extends TestCase
 
         $controller = new QuizController($mockService);
         $request = new Request();
+        $admin = new \App\Models\User();
+        $admin->type = 'admin';
+        $request->setUserResolver(fn () => $admin);
 
         $response = $controller->freekey($request);
 
