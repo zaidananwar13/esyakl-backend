@@ -52,43 +52,70 @@ class CertificateController extends Controller
         return $this->successResponse(self::API_NAME, $certificates, 'Retrieving data successful!');
     }
 
-    public static function create(Request $request)
+    public function create(Request $request)
     {
         $token = $request->input('api_token');
         $class = $request->input('class');
 
+        if (!$token || !$class) {
+            return $this->errorResponse('Certificate API', 400, 'api_token and class are required');
+        }
+
         $user = User::select('id_user', 'name')->where('api_token', $token)->first();
+        if (!$user) {
+            return Help::unauthorized('Certificate');
+        }
+
         $kelas = \App\Models\Kelas::where('id_class', $class)->first();
+        if (!$kelas) {
+            return $this->notFoundResponse(self::API_NAME, 'Class not found');
+        }
+
         $classStudent = \App\Models\ClassStudent::select('id_class_student')
             ->where('id_user', $user->id_user)
             ->where('id_class', $class)
             ->first();
+
+        if (!$classStudent) {
+            return $this->notFoundResponse(self::API_NAME, 'Student enrollment not found');
+        }
 
         $cert = \App\Models\CertificateStudent::select('token')
             ->where('id_class_student', $classStudent->id_class_student)
             ->first();
 
         if ($cert === null) {
+            $template = \App\Models\Certificate::select('template')
+                ->where('status', 'active')
+                ->first();
+
+            $noCert = substr(hash('sha256', \Illuminate\Support\Str::random(60)), 0, 24);
             $file = $user->name . '-' . date('YmdHis') . '.pdf';
+            $fileUrl = config('app.url', 'https://api.arabic-go.com') . '/storage/files/user/' . $file;
+
             $cert = new \App\Models\CertificateStudent();
             $cert->id_class_student = $classStudent->id_class_student;
-            $cert->token = hash('sha256', \Illuminate\Support\Str::random(60));
-            $cert->file = $file;
-            $cert->created_at = \Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s');
-            $cert->updated_at = \Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s');
+            $cert->token = $noCert;
+            $cert->file = $fileUrl;
+            $cert->created_at = \Illuminate\Support\Carbon::now()->format('U');
+            $cert->updated_at = \Illuminate\Support\Carbon::now()->format('U');
+            $cert->save();
 
+            $qrUrl = config('app-settings.frontend.base_url', 'https://arabic-go.com/') . 'certificate/' . $noCert;
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.cert', [
+                'template' => $template->template ?? null,
                 'name' => $user->name,
                 'class' => $kelas->title,
                 'valid_until' => \Illuminate\Support\Carbon::now()->addYear(2)->format('d F, Y'),
-                'no_cert' => substr(hash('sha256', \Illuminate\Support\Str::random(1)), 0, 12),
+                'no_cert' => $noCert,
+                'img' => base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->errorCorrection('H')->generate($qrUrl)),
             ]);
 
             $pdf->setPaper('A4', 'landscape');
             $content = $pdf->download()->getOriginalContent();
             \Illuminate\Support\Facades\Storage::put('public/files/user/' . $file, $content);
 
-            return $this->successResponse('Certificate API', null, 'success');
+            return $this->successResponse('Certificate API', ['token' => $noCert, 'file' => $fileUrl], 'success');
         }
 
         return $this->errorResponse('Certificate API', 400, 'failed');

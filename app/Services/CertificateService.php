@@ -94,7 +94,7 @@ class CertificateService
 
     public function createCertificate($classStudent): bool
     {
-        $existing = ClassCertificate::where('id_class_student', $classStudent->id_user)->first();
+        $existing = ClassCertificate::where('id_class_student', $classStudent->id_class_student)->first();
 
         if ($existing) {
             return false;
