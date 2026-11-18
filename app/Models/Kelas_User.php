@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @deprecated Legacy orphan model. Replaced by App\Models\ClassStudent (table: class_student).
+ */
 class Kelas_User extends Model
 {
     use HasFactory;

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @deprecated Legacy model. Access tracking handled by App\Models\SyllabusStudent (table: syllabus_student).
+ */
 class SilabusChecker extends Model
 {
     use HasFactory;

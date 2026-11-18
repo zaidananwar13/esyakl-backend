@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @deprecated Legacy model. Active syllabus model is App\Models\Syllabus (table: syllabus).
+ */
 class Sub_Kategori_Silabus extends Model
 {
     use HasFactory;
