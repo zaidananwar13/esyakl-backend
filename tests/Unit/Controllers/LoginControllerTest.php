@@ -18,12 +18,14 @@ class LoginControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        \Illuminate\Support\Facades\DB::beginTransaction();
         $this->mockService = Mockery::mock(AuthService::class);
         $this->controller = new LoginController($this->mockService);
     }
 
     protected function tearDown(): void
     {
+        \Illuminate\Support\Facades\DB::rollBack();
         Mockery::close();
         parent::tearDown();
     }
@@ -101,6 +103,86 @@ class LoginControllerTest extends TestCase
         $response = $this->controller->login($request);
 
         $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function login_supports_username_field()
+    {
+        $token = \Illuminate\Support\Str::random(60);
+        $id = \Illuminate\Support\Facades\DB::table('user')->insertGetId([
+            'name' => 'Test User',
+            'email' => 'testuser_' . uniqid() . '@example.com',
+            'api_token' => $token,
+            'type' => 'student',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ], 'id_user');
+        $user = \App\Models\User::find($id);
+
+        $request = Request::create('/api/login', 'POST', [
+            'username' => 'testuser',
+            'password' => 'password123',
+        ]);
+
+        $this->mockService
+            ->shouldReceive('login')
+            ->once()
+            ->with('testuser', 'password123')
+            ->andReturn([
+                'success' => true,
+                'code' => 200,
+                'user' => $user,
+                'data' => [
+                    'api_token' => $token,
+                    'name' => 'Test User',
+                    'email' => $user->email,
+                    'img' => null,
+                ],
+            ]);
+
+        $response = $this->controller->login($request);
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function login_allows_short_valid_username()
+    {
+        $token = \Illuminate\Support\Str::random(60);
+        $id = \Illuminate\Support\Facades\DB::table('user')->insertGetId([
+            'name' => 'Zai',
+            'email' => 'zai_' . uniqid() . '@example.com',
+            'api_token' => $token,
+            'type' => 'student',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ], 'id_user');
+        $user = \App\Models\User::find($id);
+
+        $request = Request::create('/api/login', 'POST', [
+            'username' => 'zai',
+            'password' => 'password123',
+        ]);
+
+        $this->mockService
+            ->shouldReceive('login')
+            ->once()
+            ->with('zai', 'password123')
+            ->andReturn([
+                'success' => true,
+                'code' => 200,
+                'user' => $user,
+                'data' => [
+                    'api_token' => $token,
+                    'name' => 'Zai',
+                    'email' => $user->email,
+                    'img' => null,
+                ],
+            ]);
+
+        $response = $this->controller->login($request);
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     #[Test]

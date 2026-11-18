@@ -26,12 +26,20 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        // Support both 'username' and 'email' parameters
+        $identifier = $request->input('username') ?? $request->input('email');
+        $password = $request->input('password');
+
         // Legacy contract: string message + status 422 (the frontend shows the message as-is).
-        if ($request->input('email') === null || $request->input('password') === null) {
+        if ($identifier === null || $password === null) {
             return $this->legacyResponse(self::API_NAME, ['code' => 422, 'status' => 422, 'message' => 'Invalid Input'], 422);
         }
 
-        if (strlen($request->input('email')) < 7 || strlen($request->input('password')) < 8) {
+        // If email (contains @), check >= 7; if username, check >= 3.
+        $isEmail = str_contains((string) $identifier, '@');
+        $minIdentifierLength = $isEmail ? 7 : 3;
+
+        if (strlen((string) $identifier) < $minIdentifierLength || strlen((string) $password) < 8) {
             return $this->legacyResponse(self::API_NAME, [
                 'code' => 422,
                 'status' => 422,
@@ -39,7 +47,7 @@ class LoginController extends Controller
             ], 422);
         }
 
-        $result = $this->authService->login($request->input('email'), $request->input('password'));
+        $result = $this->authService->login($identifier, $password);
 
         if (!$result['success']) {
             // Legacy contract: code was the string "403".

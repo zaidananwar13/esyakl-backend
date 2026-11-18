@@ -29,10 +29,17 @@ class AuthService
         return $user?->id_user;
     }
 
-    public function login(string $email, string $password): array
+    public function login(string $identifier, string $password): array
     {
-        $user = User::select('id_user', 'name', 'email', 'email_verified_at', 'avatar_original', 'api_token', 'password')
-            ->where('email', $email)
+        $identifier = trim($identifier);
+
+        $user = User::select('id_user', 'name', 'username', 'email', 'email_verified_at', 'avatar_original', 'api_token', 'password')
+            ->where(function ($query) use ($identifier) {
+                $query->where('email', $identifier)
+                    ->orWhere('username', $identifier)
+                    ->orWhereRaw('LOWER(email) = ?', [strtolower($identifier)])
+                    ->orWhereRaw('LOWER(username) = ?', [strtolower($identifier)]);
+            })
             ->first();
 
         if (!$user) {
@@ -66,6 +73,7 @@ class AuthService
             'data' => [
                 'api_token' => $user->api_token,
                 'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email,
                 'img' => $user->avatar_original,
             ]

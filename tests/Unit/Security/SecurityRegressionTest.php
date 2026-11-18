@@ -201,4 +201,66 @@ class SecurityRegressionTest extends TestCase
         $this->assertNotContains('v2/getusertoken', $uris);
         $this->assertNotContains('notification/handle', $uris);
     }
+
+    #[Test]
+    public function login_sqli_payload_fails_safely(): void
+    {
+        $authService = app(\App\Services\AuthService::class);
+        $result = $authService->login("' OR '1'='1", "some_password");
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(403, $result['code']);
+    }
+
+    #[Test]
+    public function login_does_not_leak_password_in_returned_data(): void
+    {
+        $authService = app(\App\Services\AuthService::class);
+        $token = hash('sha256', 'security-login-test');
+        $id = DB::table('user')->insertGetId([
+            'name' => 'Sec User',
+            'username' => 'secuser',
+            'email' => 'sec@example.test',
+            'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+            'email_verified_at' => time(),
+            'api_token' => $token,
+            'type' => 'student',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ], 'id_user');
+
+        $result = $authService->login('secuser', 'password123');
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('password', $result['data']);
+    }
+
+    #[Test]
+    public function login_prevents_user_enumeration(): void
+    {
+        $authService = app(\App\Services\AuthService::class);
+        // Non-existent user
+        $resultNonExistent = $authService->login('non_existent_account', 'password123');
+
+        // Existing user with wrong password
+        $id = DB::table('user')->insertGetId([
+            'name' => 'Enum User',
+            'username' => 'enumuser',
+            'email' => 'enum@example.test',
+            'password' => \Illuminate\Support\Facades\Hash::make('correct_password'),
+            'email_verified_at' => time(),
+            'api_token' => hash('sha256', 'enum-token'),
+            'type' => 'student',
+            'created_at' => time(),
+            'updated_at' => time(),
+        ], 'id_user');
+
+        $resultWrongPassword = $authService->login('enumuser', 'wrong_password');
+
+        // Both should return identical error message and code to prevent enumeration
+        $this->assertFalse($resultNonExistent['success']);
+        $this->assertFalse($resultWrongPassword['success']);
+        $this->assertSame($resultNonExistent['code'], $resultWrongPassword['code']);
+        $this->assertSame($resultNonExistent['message'], $resultWrongPassword['message']);
+    }
 }
