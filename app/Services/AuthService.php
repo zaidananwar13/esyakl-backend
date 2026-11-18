@@ -46,7 +46,7 @@ class AuthService
             return [
                 'success' => false,
                 'code' => 403,
-                'message' => 'Access Forbidden, Invalid email/password!'
+                'message' => 'Email/username atau password tidak cocok'
             ];
         }
 
@@ -54,7 +54,7 @@ class AuthService
             return [
                 'success' => false,
                 'code' => 403,
-                'message' => 'Access Forbidden, Invalid email/password!'
+                'message' => 'Email/username atau password tidak cocok'
             ];
         }
 
@@ -62,7 +62,7 @@ class AuthService
             return [
                 'success' => false,
                 'code' => 403,
-                'message' => 'Access Forbidden, Please verify your email first!'
+                'message' => 'Akun belum diverifikasi. Silakan periksa kotak masuk atau spam email Anda'
             ];
         }
 

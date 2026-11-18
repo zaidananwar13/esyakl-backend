@@ -43,7 +43,7 @@ class LoginController extends Controller
             return $this->legacyResponse(self::API_NAME, [
                 'code' => 422,
                 'status' => 422,
-                'message' => 'Invalid Input. Please check your email or password length!',
+                'message' => 'Format email/username atau password tidak sesuai (password minimal 8 karakter)',
             ], 422);
         }
 
