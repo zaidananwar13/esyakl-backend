@@ -30,6 +30,14 @@ class PaymentController extends Controller
      */
     public function createSnapPayment(Request $request)
     {
+        $user = User::select("id_user")
+            ->where("api_token", $request->input('api_token'))
+            ->first();
+
+        if (!$user) {
+            return $this->unauthorizedResponse(self::API_NAME, 'You must login first!');
+        }
+
         // Validate input
         $validator = Validator::make($request->all(), [
             'class' => 'required|integer|exists:class,id_class',
@@ -38,14 +46,6 @@ class PaymentController extends Controller
 
         if ($validator->fails()) {
             return $this->validationErrorResponse(self::API_NAME, $validator->errors()->all());
-        }
-
-        $user = User::select("id_user")
-            ->where("api_token", $request->input('api_token'))
-            ->first();
-
-        if (!$user) {
-            return $this->unauthorizedResponse(self::API_NAME, 'You must login first!');
         }
 
         $classId = (int) $request->input('class');

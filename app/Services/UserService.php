@@ -24,6 +24,7 @@ use App\Models\UserLog;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -654,11 +655,15 @@ class UserService
         $frontendUrl = config('app-settings.frontend_url', 'https://arabic-go.com');
         $link = $frontendUrl . '/new-password?token=' . $token;
 
-        Mail::to($user->email)->send(new \App\Mail\ForgotPassword([
-            'mailed' => $user->name,
-            'content' => "Please click the link below within $expiryMinutes minutes to reset your password",
-            'link' => $link,
-        ]));
+        try {
+            Mail::to($user->email)->send(new \App\Mail\ForgotPassword([
+                'mailed' => $user->name,
+                'content' => "Please click the link below within $expiryMinutes minutes to reset your password",
+                'link' => $link,
+            ]));
+        } catch (\Throwable $e) {
+            Log::warning('Password reset email failed to send: ' . $e->getMessage());
+        }
 
         return [
             'success' => true,
