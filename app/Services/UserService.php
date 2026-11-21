@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helper;
+use App\Helpers\SocialMediaHelper;
 use App\Models\Bahasa;
 use App\Models\CertificateStudent;
 use App\Models\ClassLecture;
@@ -297,10 +298,15 @@ class UserService
     {
         $mentors = User::select('name', 'current_job', 'avatar_original as foto', 'type as jabatan', 'social_media')
             ->where('type', 'teacher')
+            // Security-testing accounts (SUB-08) must not show up on the public Mentors page.
+            ->where(function ($query) {
+                $query->whereNull('username')->orWhere('username', 'not like', 'sectest\_%');
+            })
             ->get();
 
         foreach ($mentors as $mentor) {
-            $mentor->social_media = json_decode($mentor->social_media);
+            // Always {linkedin, facebook, instagram} with full https URLs or null (SUB-09.2).
+            $mentor->social_media = SocialMediaHelper::normalize($mentor->social_media);
         }
 
         return [
@@ -334,6 +340,13 @@ class UserService
         $idUser = $user['id_user'];
         $user['joined_at'] = Carbon::createFromTimestamp($user['joined_at'], config('app.timezone'))->format('M d, Y, g:i:s A');
         unset($user['id_user']);
+
+        // Accounts created outside the register flow can have avatar_original NULL. The settings
+        // page calls profile.includes("user.png") and crashed on null, so fall back to the same
+        // default avatar that AuthService::register() stores.
+        if (empty($user['profile'])) {
+            $user['profile'] = 'user.png';
+        }
 
         $language = Bahasa::select('id_bahasa as id', 'bahasa as language')->get();
         foreach ($language as $lang) {

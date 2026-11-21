@@ -75,7 +75,8 @@ class AuthService
                 'name' => $user->name,
                 'username' => $user->username,
                 'email' => $user->email,
-                'img' => $user->avatar_original,
+                // NULL avatar would be stored as the string "null" in the frontend's localStorage.
+                'img' => $user->avatar_original ?: 'user.png',
             ]
         ];
     }
